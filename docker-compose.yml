@@ -1,0 +1,10 @@
+services:
+  gpt-image-playground:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+    ports:
+      - "8080:80"        # 左边是服务器端口，可自行修改
+    environment:
+      - API_URL=http://sub2.kalin.asia   # 改成你的 API 地址
+    restart: unless-stopped

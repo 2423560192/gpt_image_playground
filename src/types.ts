@@ -8,10 +8,11 @@ export interface AppSettings {
 }
 
 const DEFAULT_BASE_URL = import.meta.env.VITE_DEFAULT_API_URL?.trim() || 'https://api.openai.com'
+const DEFAULT_API_KEY = import.meta.env.VITE_DEFAULT_API_KEY?.trim() || ''
 
 export const DEFAULT_SETTINGS: AppSettings = {
   baseUrl: DEFAULT_BASE_URL,
-  apiKey: '',
+  apiKey: DEFAULT_API_KEY,
   model: 'gpt-image-2',
   timeout: 300,
 }

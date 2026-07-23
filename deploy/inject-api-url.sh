@@ -40,10 +40,10 @@ find /usr/share/nginx/html/assets -type f -name "*.js" -exec sed -i "s|__VITE_SH
 # 检查是否启用了 API 代理
 if [ "$ENABLE_API_PROXY" != "true" ]; then
     # 删除代理配置块
-    sed -i '/# BEGIN API PROXY/,/# END API PROXY/d' /etc/nginx/conf.d/default.conf
+    sed -i '/# BEGIN API PROXY/,/# END API PROXY/d' /etc/nginx/http.d/default.conf
 fi
 
 # 同时将 nginx.conf 中的代理上游地址替换为实际 API_URL
-sed -i "s|__API_UPSTREAM_PLACEHOLDER__|$API_URL|g" /etc/nginx/conf.d/default.conf
+sed -i "s|__API_UPSTREAM_PLACEHOLDER__|$API_URL|g" /etc/nginx/http.d/default.conf
 
 exec "$@"

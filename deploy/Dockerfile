@@ -38,4 +38,4 @@ COPY deploy/proxy-server.js /proxy-server.js
 
 EXPOSE 80
 
-CMD ["sh", "-c", "envsubst '${HOST} ${PORT}' < /etc/nginx/templates/default.conf.template > /etc/nginx/http.d/default.conf && node /proxy-server.js & nginx -g 'daemon off;'"]
+CMD ["sh", "-c", "envsubst '${HOST} ${PORT}' < /etc/nginx/templates/default.conf.template > /etc/nginx/http.d/default.conf && sh /docker-entrypoint.d/05-migrate-api-env.envsh && sh /docker-entrypoint.d/40-inject-api-url.sh sh -c 'node /proxy-server.js & exec nginx -g \"daemon off;\"'"]

@@ -207,6 +207,27 @@ input[type="number"] {
   display: none;
 }
 
+.sidebar-scrollbar {
+  scrollbar-color: rgba(96, 165, 250, 0.72) transparent;
+  scrollbar-width: thin;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-thumb {
+  border: 1px solid transparent;
+  border-radius: 9999px;
+  background: rgba(96, 165, 250, 0.72);
+  background-clip: padding-box;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.9);
+  background-clip: padding-box;
+}
+
 .markdown-renderer {
   color: inherit;
   line-height: inherit;

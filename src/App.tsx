@@ -123,28 +123,30 @@ export default function App() {
       {appMode === 'agent' ? (
         <AgentWorkspace />
       ) : (
-        <main data-home-main data-drag-select-surface className="pb-48 pt-3 sm:pt-5 lg:pb-12">
-          <div className="safe-area-x mx-auto w-full px-4 sm:px-6 lg:px-8 2xl:px-12">
+        <main data-home-main data-drag-select-surface className="pb-48 pt-3 sm:pt-5 lg:h-[calc(100vh-4rem)] lg:overflow-hidden lg:pb-4">
+          <div className="safe-area-x mx-auto h-full w-full px-4 sm:px-6 lg:px-8 2xl:px-12">
             {isDesktopLayout ? (
               <div className="mx-auto max-w-[112rem]">
-                <div data-no-drag-select className="mb-5 text-center">
-                  <div className="mx-auto mb-2 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-500 text-white shadow-[0_16px_32px_-16px_rgba(37,99,235,0.95)] ring-4 ring-blue-500/10 dark:ring-blue-400/10">
+                <div data-no-drag-select className="mb-3 flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-500 text-white shadow-[0_16px_32px_-16px_rgba(37,99,235,0.95)] ring-4 ring-blue-500/10 dark:ring-blue-400/10">
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2.8l2.1 5.7 5.7 2.1-5.7 2.1-2.1 5.7-2.1-5.7-5.7-2.1 5.7-2.1L12 2.8zm5.8 12.4l.9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9.9-2.4z" />
                     </svg>
                   </div>
-                  <h2 className="text-3xl font-black tracking-tight text-blue-600 dark:text-blue-400">星柴AI生图</h2>
-                  <p className="mt-1 text-sm font-medium text-slate-500 dark:text-slate-400">高级轻量的 AI 图片创作工坊</p>
+                  <div className="text-left">
+                    <h2 className="text-xl font-black tracking-tight text-blue-600 dark:text-blue-400">星柴AI生图</h2>
+                    <p className="mt-0.5 text-xs font-medium text-slate-500 dark:text-slate-400">高级轻量的 AI 图片创作工坊</p>
+                  </div>
                 </div>
-                <div className="grid min-h-[calc(100vh-12rem)] grid-cols-[21rem_minmax(38rem,1fr)_19rem] items-start gap-6 xl:grid-cols-[22rem_minmax(44rem,1fr)_20rem] xl:gap-8 2xl:grid-cols-[23rem_minmax(48rem,1fr)_21rem]">
-                  <aside data-no-drag-select className="sticky top-[5.5rem]">
+                <div className="grid h-[calc(100vh-9.5rem)] min-h-0 grid-cols-[21rem_minmax(38rem,1fr)_19rem] items-stretch gap-6 xl:grid-cols-[22rem_minmax(44rem,1fr)_20rem] xl:gap-8 2xl:grid-cols-[23rem_minmax(48rem,1fr)_21rem]">
+                  <aside data-no-drag-select className="h-full min-h-0 overflow-hidden">
                     <InputBar desktopInline />
                   </aside>
-                  <section className="min-w-0">
+                  <section className="hide-scrollbar min-h-0 min-w-0 overflow-y-auto">
                     {filterFavorite && !activeFavoriteCollectionId ? <FavoriteCollectionsView /> : <TaskGrid />}
                   </section>
-                  <aside data-no-drag-select className="sticky top-[5.5rem]">
-                    <div className="min-h-[calc(100vh-12rem)] rounded-[24px] border border-white/80 bg-white/86 p-4 shadow-[0_22px_60px_-44px_rgba(15,23,42,0.52)] backdrop-blur-2xl ring-1 ring-slate-900/[0.03] dark:border-white/[0.08] dark:bg-slate-950/58 dark:ring-white/[0.06]">
+                  <aside data-no-drag-select className="h-full min-h-0">
+                    <div className="hide-scrollbar h-full min-h-0 overflow-y-auto rounded-[24px] border border-white/80 bg-white/86 p-4 shadow-[0_22px_60px_-44px_rgba(15,23,42,0.52)] backdrop-blur-2xl ring-1 ring-slate-900/[0.03] dark:border-white/[0.08] dark:bg-slate-950/58 dark:ring-white/[0.06]">
                       <div className="mb-3 flex items-center gap-2">
                         <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-50 text-blue-600 ring-1 ring-blue-100 dark:bg-blue-500/10 dark:text-blue-300 dark:ring-blue-400/10">
                           <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

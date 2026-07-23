@@ -1,7 +1,20 @@
 import type { ApiProfile, TaskParams } from '../../types'
+import { calculateImageSize, normalizeImageSize, type SizeTier } from '../../lib/size'
 import { dismissAllTooltips } from '../../lib/tooltipDismiss'
 import Select from '../Select'
 import ButtonTooltip from './buttonTooltip'
+
+const SIZE_TIERS: SizeTier[] = ['1K', '2K', '4K']
+const RATIO_OPTIONS = [
+  { label: '默认 1:1', value: '1:1' },
+  { label: '摄影 9:16', value: '9:16' },
+  { label: '电影 16:9', value: '16:9' },
+  { label: '社交媒体 3:4', value: '3:4' },
+  { label: '电脑桌面 4:3', value: '4:3' },
+  { label: '单反摄影 2:3', value: '2:3' },
+  { label: '单反摄像 3:2', value: '3:2' },
+  { label: '超宽银幕 21:9', value: '21:9' },
+]
 
 interface HintTooltipState {
   visible: boolean
@@ -92,7 +105,7 @@ export default function InputParamsPanel({
   streamConcurrentHint: HintTooltipState
   sizeHint: HintTooltipState
   qualityHint: HintTooltipState
-  onOpenSizePicker: () => void
+  onOpenSizePicker: (anchor: DOMRect) => void
 }) {
   if (expanded) {
     const optionClass = (active: boolean, disabled = false) => `flex min-h-9 flex-1 items-center justify-center rounded-xl px-2 text-[11px] font-semibold transition-all ${
@@ -102,7 +115,7 @@ export default function InputParamsPanel({
           ? 'bg-white text-blue-600 shadow-sm ring-1 ring-slate-900/[0.06] dark:bg-slate-700 dark:text-blue-300 dark:ring-white/[0.08]'
           : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
     }`
-    const fieldClass = 'relative space-y-2'
+    const fieldClass = 'relative space-y-1.5'
     const labelClass = 'block text-xs font-bold text-slate-700 dark:text-slate-300'
     const groupClass = 'flex gap-1 rounded-2xl bg-slate-100/90 p-1 dark:bg-white/[0.05]'
     const qualityValue = activeProfile.codexCli
@@ -110,10 +123,16 @@ export default function InputParamsPanel({
       : isFalProvider && params.quality === 'auto'
         ? 'high'
         : params.quality
+    const normalizedSize = normalizeImageSize(params.size)
+    const sizePreset = SIZE_TIERS
+      .flatMap((tier) => RATIO_OPTIONS.map((option) => ({ tier, ratio: option.value })))
+      .find((item) => calculateImageSize(item.tier, item.ratio) === normalizedSize)
+    const sizeTier = sizePreset?.tier ?? '1K'
+    const sizeRatio = sizePreset?.ratio ?? '1:1'
 
     return (
-      <div className="space-y-5 text-xs">
-        <label
+      <div className="space-y-3.5 text-xs">
+        <div
           className={fieldClass}
           onMouseEnter={sizeHint.show}
           onMouseLeave={sizeHint.hide}
@@ -122,25 +141,41 @@ export default function InputParamsPanel({
           onTouchCancel={sizeHint.hide}
           onClick={sizeHint.show}
         >
-          <span className={labelClass}>画面尺寸</span>
-          <button
-            type="button"
-            onClick={() => {
-              dismissAllTooltips()
-              onOpenSizePicker()
-            }}
-            className="flex w-full items-center justify-between rounded-2xl border border-slate-200/80 bg-white/70 px-4 py-3 text-left font-mono text-xs text-slate-700 shadow-sm transition-all hover:border-blue-300 hover:bg-white dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-200 dark:hover:border-blue-400/30 dark:hover:bg-white/[0.06]"
-          >
-            <span>{displaySize}</span>
-            <svg className="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+          <span className="block text-xs font-medium text-blue-500 dark:text-blue-400">图片比例</span>
+          <Select
+            value={sizeRatio}
+            onChange={(value) => setParams({ size: calculateImageSize(sizeTier, String(value)) ?? params.size })}
+            options={RATIO_OPTIONS}
+            className="rounded-xl border-2 border-blue-400 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-sm transition-all dark:border-blue-500 dark:bg-white/[0.04] dark:text-slate-200"
+          />
           <ButtonTooltip
             visible={isFalTextToImage && sizeHint.visible}
             text={<>fal.ai 的文生图模式不支持 <code className="rounded bg-white/10 px-1 py-0.5 font-mono">auto</code> 参数</>}
           />
-        </label>
+        </div>
+
+        <div className={fieldClass}>
+          <span className={labelClass}>分辨率</span>
+          <div className="grid grid-cols-3 gap-2">
+            {SIZE_TIERS.map((item) => (
+              <button
+                key={item}
+                type="button"
+                onClick={() => setParams({ size: calculateImageSize(item, sizeRatio) ?? params.size })}
+                className={`rounded-xl border px-3 py-2.5 text-xs font-medium transition-all ${
+                  sizeTier === item
+                    ? 'border-blue-500 bg-blue-500 text-white shadow-sm'
+                    : 'border-slate-200 bg-white/70 text-slate-600 hover:border-blue-300 dark:border-white/[0.1] dark:bg-white/[0.03] dark:text-slate-300'
+                }`}
+              >
+                {item}{item === '1K' ? '(默认)' : ''}
+              </button>
+            ))}
+          </div>
+          <span className="block text-[10px] leading-relaxed text-slate-400 dark:text-slate-500">
+            2K / 4K 更清晰，生成更慢、消耗更多额度
+          </span>
+        </div>
 
         <div
           className={fieldClass}
@@ -371,7 +406,7 @@ export default function InputParamsPanel({
         <span className="text-gray-400 dark:text-gray-500 ml-1">尺寸</span>
         <button
           type="button"
-          onClick={() => { dismissAllTooltips(); onOpenSizePicker() }}
+          onClick={(e) => { dismissAllTooltips(); onOpenSizePicker(e.currentTarget.getBoundingClientRect()) }}
           className="px-3 py-1.5 rounded-xl border border-gray-200/60 dark:border-white/[0.08] bg-white/50 dark:bg-white/[0.03] hover:bg-white dark:hover:bg-white/[0.06] focus:outline-none text-xs text-left transition-all duration-200 shadow-sm font-mono"
           title="选择尺寸"
         >

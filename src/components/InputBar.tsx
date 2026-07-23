@@ -636,6 +636,7 @@ export default function InputBar({ desktopInline = false }: InputBarProps) {
   const [imageHintId, setImageHintId] = useState<string | null>(null)
   const [mobileCollapsed, setMobileCollapsed] = useState(false)
   const [showSizePicker, setShowSizePicker] = useState(false)
+  const [sizePickerAnchor, setSizePickerAnchor] = useState<DOMRect | null>(null)
   const [showMobileUploadMenu, setShowMobileUploadMenu] = useState(false)
   const [maskPreviewUrl, setMaskPreviewUrl] = useState('')
   const [imageDragIndex, setImageDragIndex] = useState<number | null>(null)
@@ -1958,7 +1959,10 @@ export default function InputBar({ desktopInline = false }: InputBarProps) {
       streamConcurrentHint={streamConcurrentHint}
       sizeHint={sizeHint}
       qualityHint={qualityHint}
-      onOpenSizePicker={() => setShowSizePicker(true)}
+      onOpenSizePicker={(anchor) => {
+        setSizePickerAnchor(anchor)
+        setShowSizePicker(true)
+      }}
     />
   )
 
@@ -1972,6 +1976,7 @@ export default function InputBar({ desktopInline = false }: InputBarProps) {
       {showSizePicker && (
         <SizePickerModal
           currentSize={isFalTextToImage && params.size === 'auto' ? DEFAULT_FAL_IMAGE_SIZE : params.size}
+          anchor={sizePickerAnchor}
           onSelect={(size) => setParams({ size })}
           onClose={() => setShowSizePicker(false)}
           allowAuto={!isFalTextToImage}
@@ -1980,7 +1985,7 @@ export default function InputBar({ desktopInline = false }: InputBarProps) {
 
       <div
         data-input-bar
-        className={`${desktopInline ? 'lg:static lg:z-auto lg:w-full lg:max-w-none lg:translate-x-0 lg:px-0' : 'lg:bottom-auto lg:left-[calc(50%-36rem)] lg:top-[6.5rem] lg:w-64 lg:max-w-none lg:translate-x-0 lg:px-0'} fixed bottom-4 left-1/2 z-30 w-full max-w-3xl -translate-x-1/2 px-3 transition-all duration-300 sm:bottom-6 sm:px-4${promptExpanded ? ' flex flex-col lg:bottom-6 lg:top-[6.5rem]' : ''}`}
+        className={`${desktopInline ? 'lg:static lg:z-auto lg:h-full lg:w-full lg:max-w-none lg:translate-x-0 lg:px-0' : 'lg:bottom-auto lg:left-[calc(50%-36rem)] lg:top-[6.5rem] lg:w-64 lg:max-w-none lg:translate-x-0 lg:px-0'} fixed bottom-4 left-1/2 z-30 w-full max-w-3xl -translate-x-1/2 px-3 transition-all duration-300 sm:bottom-6 sm:px-4${promptExpanded ? ' flex flex-col lg:bottom-6 lg:top-[6.5rem]' : ''}`}
         style={promptExpanded ? { top: `${promptExpandedTop}px`, transitionProperty: 'none' } : undefined}
       >
         <InputBatchBars
@@ -2000,8 +2005,8 @@ export default function InputBar({ desktopInline = false }: InputBarProps) {
           onDownloadSelected={handleDownloadSelected}
           onDeleteSelected={handleDeleteSelected}
         />
-        <div ref={cardRef} className={`${desktopInline ? 'space-y-4 bg-transparent p-0 shadow-none ring-0 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto' : 'rounded-[22px] border border-white/80 bg-white/92 p-4 shadow-[0_24px_70px_-32px_rgba(15,23,42,0.45),0_1px_0_rgba(255,255,255,0.85)_inset] backdrop-blur-2xl ring-1 ring-slate-900/[0.04] dark:border-white/[0.08] dark:bg-slate-950/78 dark:shadow-[0_24px_60px_-30px_rgba(0,0,0,0.75)] dark:ring-white/[0.08] lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto'}${promptExpanded ? ' flex min-h-0 flex-1 flex-col' : ''}`}>
-          <div className={`${desktopInline ? 'rounded-[24px] border border-white/80 bg-white/92 p-5 shadow-[0_18px_45px_-34px_rgba(15,23,42,0.48)] backdrop-blur-2xl ring-1 ring-slate-900/[0.04] dark:border-white/[0.08] dark:bg-slate-950/72 dark:ring-white/[0.08]' : 'mb-3 hidden items-center justify-between lg:flex'}`}>
+        <div ref={cardRef} className={`${desktopInline ? 'sidebar-scrollbar h-full divide-y divide-slate-200/70 overflow-y-auto rounded-[24px] border border-white/80 bg-white/92 shadow-[0_18px_45px_-34px_rgba(15,23,42,0.48)] backdrop-blur-2xl ring-1 ring-slate-900/[0.04] dark:divide-white/[0.07] dark:border-white/[0.08] dark:bg-slate-950/72 dark:ring-white/[0.08]' : 'rounded-[22px] border border-white/80 bg-white/92 p-4 shadow-[0_24px_70px_-32px_rgba(15,23,42,0.45),0_1px_0_rgba(255,255,255,0.85)_inset] backdrop-blur-2xl ring-1 ring-slate-900/[0.04] dark:border-white/[0.08] dark:bg-slate-950/78 dark:shadow-[0_24px_60px_-30px_rgba(0,0,0,0.75)] dark:ring-white/[0.08] lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto'}${promptExpanded ? ' flex min-h-0 flex-1 flex-col' : ''}`}>
+          <div className={`${desktopInline ? 'p-5' : 'mb-3 hidden items-center justify-between lg:flex'}`}>
             <div className={desktopInline ? 'flex items-center justify-between' : ''}>
               <div>
                 <div className="text-sm font-black text-slate-900 dark:text-slate-100">AI创作模型</div>
@@ -2042,11 +2047,10 @@ export default function InputBar({ desktopInline = false }: InputBarProps) {
                 </svg>
               </button>
             )}
-            </div>
           </div>
 
           {desktopInline && (
-            <div className="rounded-[24px] border border-white/80 bg-white/92 p-5 shadow-[0_18px_45px_-34px_rgba(15,23,42,0.48)] backdrop-blur-2xl ring-1 ring-slate-900/[0.04] dark:border-white/[0.08] dark:bg-slate-950/72 dark:ring-white/[0.08]">
+            <div className="p-5">
               <div className="mb-3 flex items-center justify-between">
                 <div>
                   <div className="text-sm font-black text-slate-900 dark:text-slate-100">参考图片</div>
@@ -2111,7 +2115,7 @@ export default function InputBar({ desktopInline = false }: InputBarProps) {
           )}
 
           {/* 输入框 */}
-          <div className={`${desktopInline ? 'rounded-[24px] border border-white/80 bg-white/92 p-5 shadow-[0_18px_45px_-34px_rgba(15,23,42,0.48)] backdrop-blur-2xl ring-1 ring-slate-900/[0.04] dark:border-white/[0.08] dark:bg-slate-950/72 dark:ring-white/[0.08]' : ''}`}>
+          <div className={desktopInline ? 'p-5' : ''}>
             {desktopInline && (
               <div className="mb-3 flex items-center justify-between">
                 <div className="text-sm font-black text-slate-900 dark:text-slate-100">提示词</div>
@@ -2248,7 +2252,7 @@ export default function InputBar({ desktopInline = false }: InputBarProps) {
           </div>
 
           {/* 参数 + 按钮 */}
-          <div className={desktopInline ? 'rounded-[24px] border border-white/80 bg-white/92 p-5 shadow-[0_18px_45px_-34px_rgba(15,23,42,0.48)] backdrop-blur-2xl ring-1 ring-slate-900/[0.04] dark:border-white/[0.08] dark:bg-slate-950/72 dark:ring-white/[0.08]' : 'mt-3'}>
+          <div className={desktopInline ? 'p-5' : 'mt-3'}>
             {desktopInline && (
               <div className="mb-4 flex items-center justify-between">
                 <div>
@@ -2478,6 +2482,7 @@ export default function InputBar({ desktopInline = false }: InputBarProps) {
             onChange={handleReplaceFileUpload}
           />
         </div>
+      </div>
     </>
   )
 }

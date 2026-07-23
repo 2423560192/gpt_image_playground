@@ -1,6 +1,5 @@
-@import url('https://fontsapi.zeoseven.com/442/main/result.css');
-@import url('https://cdn.jsdelivr.net/npm/@lobehub/webfont-harmony-sans-sc@1.0.0/css/index.css');
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
+/* External font CDNs removed: blocked/slow from China.
+   Fallback chain (HarmonyOS Sans SC → PingFang SC → Microsoft YaHei → system-ui) covers Chinese fonts. */
 
 @tailwind base;
 @tailwind components;
@@ -18,8 +17,8 @@
   --primary-foreground: 0 0% 100%;
   --sidebar: 220 36% 97%;
   --sidebar-foreground: 222 47% 11%;
-  --font-ui-sans: 'HarmonyOS Sans SC', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-display: 'HarmonyOS Sans SC', 'Noto Sans SC', 'PingFang SC', system-ui, sans-serif;
+  --font-ui-sans: 'PingFang SC', 'Microsoft YaHei', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
   --font-mono: 'Maple Mono', 'Cascadia Code', 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
   --safe-area-top: env(safe-area-inset-top, 0px);
   --safe-area-right: env(safe-area-inset-right, 0px);

@@ -38,4 +38,4 @@ COPY deploy/proxy-server.js /proxy-server.js
 
 EXPOSE 80
 
-CMD ["sh", "-c", "node /proxy-server.js & nginx -g 'daemon off;'"]
+CMD ["sh", "-c", "envsubst < /etc/nginx/templates/default.conf.template > /etc/nginx/http.d/default.conf && node /proxy-server.js & nginx -g 'daemon off;'"]

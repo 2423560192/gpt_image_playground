@@ -146,8 +146,8 @@ export default function Header() {
 
   return (
     <>
-      <header data-no-drag-select className={`safe-area-top fixed top-0 left-0 right-0 z-40 bg-white/80 dark:bg-gray-950/80 backdrop-blur border-b border-gray-200 dark:border-white/[0.08] transition-transform duration-300 ease-in-out ${appMode === 'agent' && !agentMobileHeaderVisible ? '-translate-y-full sm:translate-y-0' : 'translate-y-0'}`}>
-        <div className="safe-area-x safe-header-inner max-w-7xl mx-auto flex items-center justify-between relative">
+      <header data-no-drag-select className={`safe-area-top fixed top-0 left-0 right-0 z-40 border-b border-slate-200/80 bg-white/78 backdrop-blur-2xl shadow-[0_1px_0_rgba(255,255,255,0.7),0_18px_40px_-28px_rgba(15,23,42,0.45)] transition-transform duration-300 ease-in-out dark:border-white/[0.08] dark:bg-slate-950/72 dark:shadow-none ${appMode === 'agent' && !agentMobileHeaderVisible ? '-translate-y-full sm:translate-y-0' : 'translate-y-0'}`}>
+        <div className="safe-area-x safe-header-inner mx-auto flex max-w-[1480px] items-center justify-between relative px-4 sm:px-6 lg:px-8">
           <div className="flex-1 min-w-0 pr-2 flex items-center gap-2">
             <h1 className="inline-flex min-w-0 items-start relative mr-2">
               {showFavoriteCollectionTitle ? (
@@ -157,9 +157,14 @@ export default function Header() {
                     href="https://github.com/CookSleep/gpt_image_playground"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hidden text-lg font-bold tracking-tight text-gray-800 transition-colors hover:text-gray-600 dark:text-gray-100 dark:hover:text-gray-300 sm:inline"
+                    className="hidden items-center gap-2 text-lg font-bold tracking-tight text-slate-900 transition-colors hover:text-blue-600 dark:text-slate-100 dark:hover:text-blue-300 sm:inline-flex"
                   >
-                    GPT Image Playground
+                    <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-500 text-white shadow-[0_10px_20px_-12px_rgba(37,99,235,0.9)]">
+                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2.8l2.1 5.7 5.7 2.1-5.7 2.1-2.1 5.7-2.1-5.7-5.7-2.1 5.7-2.1L12 2.8zm5.8 12.4l.9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9.9-2.4z" />
+                      </svg>
+                    </span>
+                    星柴AI生图
                   </a>
                 </>
               ) : (
@@ -167,9 +172,14 @@ export default function Header() {
                   href="https://github.com/CookSleep/gpt_image_playground"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[17px] sm:text-lg font-bold tracking-tight text-gray-800 dark:text-gray-100 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  className="inline-flex items-center gap-2 text-[17px] font-bold tracking-tight text-slate-900 transition-colors hover:text-blue-600 dark:text-slate-100 dark:hover:text-blue-300 sm:text-lg"
                 >
-                  GPT Image Playground
+                  <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-500 text-white shadow-[0_10px_20px_-12px_rgba(37,99,235,0.9)]">
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2.8l2.1 5.7 5.7 2.1-5.7 2.1-2.1 5.7-2.1-5.7-5.7-2.1 5.7-2.1L12 2.8zm5.8 12.4l.9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9.9-2.4z" />
+                    </svg>
+                  </span>
+                  星柴AI生图
                 </a>
               )}
               {hasUpdate && latestRelease && (
@@ -235,18 +245,18 @@ export default function Header() {
               </div>
             </div>
           )}
-          <div className="hidden sm:flex items-center gap-1 rounded-xl border border-gray-200 dark:border-white/[0.08] bg-gray-100/70 dark:bg-white/[0.04] p-1 mr-4">
+          <div className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-1 rounded-full border border-slate-200/80 bg-slate-100/80 p-1.5 shadow-sm dark:border-white/[0.08] dark:bg-white/[0.04] sm:flex">
             <button
               type="button"
               onClick={() => setAppMode('gallery')}
-              className={`px-4 py-1.5 rounded-lg text-sm transition-colors ${appMode === 'gallery' ? 'bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm font-medium' : 'text-gray-500 hover:text-gray-800 dark:hover:text-gray-200'}`}
+              className={`px-4 py-1.5 rounded-full text-sm transition-all duration-200 ${appMode === 'gallery' ? 'bg-white text-slate-900 shadow-[0_8px_20px_-12px_rgba(15,23,42,0.45)] ring-1 ring-blue-500/15 font-medium dark:bg-slate-900 dark:text-white dark:ring-white/10' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100'}`}
             >
               画廊
             </button>
             <button
               type="button"
               onClick={() => setAppMode('agent')}
-              className={`px-4 py-1.5 rounded-lg text-sm transition-colors ${appMode === 'agent' ? 'bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm font-medium' : 'text-gray-500 hover:text-gray-800 dark:hover:text-gray-200'}`}
+              className={`px-4 py-1.5 rounded-full text-sm transition-all duration-200 ${appMode === 'agent' ? 'bg-white text-slate-900 shadow-[0_8px_20px_-12px_rgba(15,23,42,0.45)] ring-1 ring-blue-500/15 font-medium dark:bg-slate-900 dark:text-white dark:ring-white/10' : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100'}`}
             >
               Agent
             </button>
@@ -262,10 +272,10 @@ export default function Header() {
                     dismissAllTooltips()
                     handleInstallClick()
                   }}
-                  className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors"
+                  className="p-2 rounded-xl border border-slate-200/80 bg-white/70 text-slate-500 shadow-sm transition-colors hover:border-blue-500/20 hover:bg-white hover:text-slate-900 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-slate-400 dark:hover:border-blue-400/20 dark:hover:bg-white/[0.08] dark:hover:text-slate-100"
                   aria-label="安装为应用"
                 >
-                  <InstallIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                  <InstallIcon className="w-5 h-5" />
                 </button>
                 <ViewportTooltip visible={installTooltip.visible} className="whitespace-nowrap">
                   安装为应用
@@ -281,10 +291,10 @@ export default function Header() {
                   dismissAllTooltips()
                   setShowHelp(true)
                 }}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors"
+                className="p-2 rounded-xl border border-slate-200/80 bg-white/70 text-slate-500 shadow-sm transition-colors hover:border-blue-500/20 hover:bg-white hover:text-slate-900 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-slate-400 dark:hover:border-blue-400/20 dark:hover:bg-white/[0.08] dark:hover:text-slate-100"
                 aria-label="操作指南"
               >
-                <HelpCircleIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                <HelpCircleIcon className="w-5 h-5" />
               </button>
               <ViewportTooltip visible={helpTooltip.visible} className="whitespace-nowrap">
                 操作指南
@@ -296,10 +306,10 @@ export default function Header() {
             >
               <button
                 onClick={() => setShowSettings(true)}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors"
+                className="p-2 rounded-xl border border-slate-200/80 bg-white/70 text-slate-500 shadow-sm transition-colors hover:border-blue-500/20 hover:bg-white hover:text-slate-900 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-slate-400 dark:hover:border-blue-400/20 dark:hover:bg-white/[0.08] dark:hover:text-slate-100"
                 aria-label="设置"
               >
-                <SettingsIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                <SettingsIcon className="w-5 h-5" />
               </button>
               <ViewportTooltip visible={settingsTooltip.visible} className="whitespace-nowrap">
                 设置

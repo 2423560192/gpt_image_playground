@@ -6,16 +6,17 @@
 @tailwind utilities;
 
 :root {
-  --background: 0 0% 100%;
-  --foreground: 240 10% 10%;
-  --muted: 240 5% 96%;
-  --muted-foreground: 240 4% 46%;
-  --border: 240 6% 90%;
-  --input: 240 6% 90%;
+  color-scheme: light;
+  --background: 220 40% 98%;
+  --foreground: 222 47% 11%;
+  --muted: 220 28% 95%;
+  --muted-foreground: 215 16% 47%;
+  --border: 214 27% 88%;
+  --input: 214 27% 88%;
   --primary: 221 83% 53%;
   --primary-foreground: 0 0% 100%;
-  --sidebar: 240 5% 96%;
-  --sidebar-foreground: 240 10% 10%;
+  --sidebar: 220 36% 97%;
+  --sidebar-foreground: 222 47% 11%;
   --font-ui-sans: 'HarmonyOS Sans SC', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
   --font-mono: 'Maple Mono', 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
   --safe-area-top: env(safe-area-inset-top, 0px);
@@ -31,8 +32,34 @@ html {
 
 body {
   padding: 0;
+  min-height: 100vh;
   -webkit-user-select: none;
   user-select: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'cv02', 'cv03', 'cv04';
+  background-color: hsl(var(--background));
+  background-image:
+    radial-gradient(1100px 520px at 50% -12%, rgba(59, 130, 246, 0.18), transparent 58%),
+    radial-gradient(760px 420px at 8% 0%, rgba(147, 197, 253, 0.16), transparent 45%),
+    radial-gradient(760px 420px at 92% 2%, rgba(96, 165, 250, 0.12), transparent 45%),
+    linear-gradient(180deg, rgba(239, 246, 255, 0.88), rgba(248, 250, 252, 0.76) 42%, rgba(248, 250, 252, 0.92));
+  background-attachment: fixed;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent 0, rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+    linear-gradient(180deg, transparent 0, rgba(59, 130, 246, 0.045) 1px, transparent 1px),
+    radial-gradient(760px 260px at 50% 0%, rgba(59, 130, 246, 0.08), transparent 62%);
+  background-size: 56px 56px, 56px 56px, auto;
+  opacity: 0.9;
 }
 
 input,
@@ -48,7 +75,7 @@ select,
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 transparent;
+  scrollbar-color: #93c5fd transparent;
 }
 
 img {
@@ -71,26 +98,44 @@ body.drag-selecting * {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: 240 10% 4%;
-    --foreground: 0 0% 98%;
-    --muted: 240 4% 16%;
-    --muted-foreground: 240 5% 65%;
-    --border: 240 4% 22%;
-    --input: 240 4% 22%;
+    color-scheme: dark;
+    --background: 222 47% 7%;
+    --foreground: 210 40% 98%;
+    --muted: 222 32% 14%;
+    --muted-foreground: 215 20% 65%;
+    --border: 217 20% 20%;
+    --input: 217 20% 20%;
     --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
-    --sidebar: 240 5% 12%;
-    --sidebar-foreground: 0 0% 98%;
+    --sidebar: 222 35% 10%;
+    --sidebar-foreground: 210 40% 98%;
+  }
+
+  body {
+    background-image:
+      radial-gradient(1100px 600px at 50% -10%, rgba(59, 130, 246, 0.2), transparent 60%),
+      radial-gradient(900px 500px at 90% 0%, rgba(37, 99, 235, 0.16), transparent 42%),
+      radial-gradient(760px 460px at 6% 10%, rgba(14, 165, 233, 0.08), transparent 46%),
+      linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 0.99));
+  }
+
+  body::before {
+    background:
+      linear-gradient(90deg, transparent 0, rgba(96, 165, 250, 0.035) 1px, transparent 1px),
+      linear-gradient(180deg, transparent 0, rgba(96, 165, 250, 0.03) 1px, transparent 1px),
+      radial-gradient(900px 320px at 50% 0%, rgba(59, 130, 246, 0.13), transparent 62%);
+    background-size: 56px 56px, 56px 56px, auto;
+    opacity: 1;
   }
 
   * {
-    scrollbar-color: #3f3f46 transparent;
+    scrollbar-color: #60a5fa transparent;
   }
 }
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+::-webkit-scrollbar-thumb { background: #93c5fd; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #60a5fa; }
 ::-webkit-scrollbar-track { background: transparent; }
 
 /* 隐藏 number input 的增减按?*/
@@ -104,8 +149,8 @@ input[type="number"] {
 }
 
 @media (prefers-color-scheme: dark) {
-  ::-webkit-scrollbar-thumb { background: #3f3f46; }
-  ::-webkit-scrollbar-thumb:hover { background: #52525b; }
+::-webkit-scrollbar-thumb { background: #60a5fa; }
+::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
 }
 
 @keyframes pulse-border {
@@ -485,4 +530,91 @@ input[type="number"] {
 .ios-rounded-scroll-fix {
   isolation: isolate;
   -webkit-mask-image: -webkit-radial-gradient(white, black);
+}
+
+/* ===== 全局质感与微交互增强（纯 CSS，零运行时开销） ===== */
+
+/* 深色模式下的页面质感基底：极微弱的径向顶光，避免纯黑平板感 */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-image: radial-gradient(120% 60% at 50% -10%, rgba(59, 130, 246, 0.05), transparent 60%);
+    background-attachment: fixed;
+  }
+
+  body {
+    background-image: radial-gradient(120% 60% at 50% -10%, rgba(59, 130, 246, 0.05), transparent 60%);
+  }
+}
+
+/* 按钮与可点击元素的按压反馈 + 统一缓动 */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]) {
+  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@media (hover: hover) {
+  button:not(:disabled):active,
+  [role="button"]:not([aria-disabled="true"]):active {
+    transform: scale(0.96);
+  }
+}
+
+/* 链接、按钮按下时即时反馈，触摸设备同样生效 */
+a,
+button,
+[role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 文本选中色与主色呼应 */
+::selection {
+  background: rgba(59, 130, 246, 0.18);
+}
+@media (prefers-color-scheme: dark) {
+  ::selection {
+    background: rgba(59, 130, 246, 0.32);
+  }
+}
+
+/* 输入框光标色与主色统一 */
+input,
+textarea,
+[contenteditable="true"] {
+  caret-color: #3b82f6;
+}
+
+/* 占位符弱化，保持排版层次 */
+::placeholder {
+  color: inherit;
+  opacity: 0.38;
+}
+
+/* 图片渲染更锐利 */
+img {
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* 任务卡悬浮提升：微位移 + 更立体的柔和阴影（仅在可悬浮设备启用） */
+@media (hover: hover) {
+  .task-card-wrapper > div > div {
+    transition-property: transform, box-shadow, border-color, background-color;
+    transition-duration: 0.22s;
+    transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .task-card-wrapper > div > div:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* 尊重系统的减弱动态偏好 */
+@media (prefers-reduced-motion: reduce) {
+  button:not(:disabled):active,
+  [role="button"]:not([aria-disabled="true"]):active {
+    transform: none;
+  }
+  .task-card-wrapper > div > div,
+  .task-card-wrapper > div > div:hover {
+    transition: none;
+    transform: none;
+  }
 }

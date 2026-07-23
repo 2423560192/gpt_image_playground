@@ -384,7 +384,11 @@ function AtImageOptionThumb({ option }: { option: AtImageOption }) {
   )
 }
 
-export default function InputBar() {
+type InputBarProps = {
+  desktopInline?: boolean
+}
+
+export default function InputBar({ desktopInline = false }: InputBarProps) {
   const prompt = useStore((s) => s.prompt)
   const appMode = useStore((s) => s.appMode)
   const setPrompt = useStore((s) => s.setPrompt)
@@ -1913,9 +1917,10 @@ export default function InputBar() {
     )
   }
 
-  const renderParams = (cols: string) => (
+  const renderParams = (cols: string, expanded = false) => (
     <InputParamsPanel
       cols={cols}
+      expanded={expanded}
       params={params}
       setParams={setParams}
       activeProfile={activeProfile}
@@ -1975,7 +1980,7 @@ export default function InputBar() {
 
       <div
         data-input-bar
-        className={`fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 w-full max-w-4xl px-3 sm:px-4 transition-all duration-300${promptExpanded ? ' flex flex-col' : ''}`}
+        className={`${desktopInline ? 'lg:static lg:z-auto lg:w-full lg:max-w-none lg:translate-x-0 lg:px-0' : 'lg:bottom-auto lg:left-[calc(50%-36rem)] lg:top-[6.5rem] lg:w-64 lg:max-w-none lg:translate-x-0 lg:px-0'} fixed bottom-4 left-1/2 z-30 w-full max-w-3xl -translate-x-1/2 px-3 transition-all duration-300 sm:bottom-6 sm:px-4${promptExpanded ? ' flex flex-col lg:bottom-6 lg:top-[6.5rem]' : ''}`}
         style={promptExpanded ? { top: `${promptExpandedTop}px`, transitionProperty: 'none' } : undefined}
       >
         <InputBatchBars
@@ -1995,7 +2000,81 @@ export default function InputBar() {
           onDownloadSelected={handleDownloadSelected}
           onDeleteSelected={handleDeleteSelected}
         />
-        <div ref={cardRef} className={`bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl border border-white/50 dark:border-white/[0.08] shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] rounded-2xl sm:rounded-3xl p-3 sm:p-4 ring-1 ring-black/5 dark:ring-white/10${promptExpanded ? ' flex min-h-0 flex-1 flex-col' : ''}`}>
+        <div ref={cardRef} className={`${desktopInline ? 'space-y-4 bg-transparent p-0 shadow-none ring-0 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto' : 'rounded-[22px] border border-white/80 bg-white/92 p-4 shadow-[0_24px_70px_-32px_rgba(15,23,42,0.45),0_1px_0_rgba(255,255,255,0.85)_inset] backdrop-blur-2xl ring-1 ring-slate-900/[0.04] dark:border-white/[0.08] dark:bg-slate-950/78 dark:shadow-[0_24px_60px_-30px_rgba(0,0,0,0.75)] dark:ring-white/[0.08] lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto'}${promptExpanded ? ' flex min-h-0 flex-1 flex-col' : ''}`}>
+          <div className={`${desktopInline ? 'rounded-[24px] border border-white/80 bg-white/92 p-5 shadow-[0_18px_45px_-34px_rgba(15,23,42,0.48)] backdrop-blur-2xl ring-1 ring-slate-900/[0.04] dark:border-white/[0.08] dark:bg-slate-950/72 dark:ring-white/[0.08]' : 'mb-3 hidden items-center justify-between lg:flex'}`}>
+            <div className={desktopInline ? 'flex items-center justify-between' : ''}>
+              <div>
+                <div className="text-sm font-black text-slate-900 dark:text-slate-100">AI创作模型</div>
+                <div className="mt-0.5 text-[11px] text-slate-400 dark:text-slate-500">选择最适合的 AI 助手</div>
+              </div>
+              {desktopInline && (
+                <div className="flex h-8 w-8 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-100 dark:bg-blue-500/10 dark:text-blue-300 dark:ring-blue-400/10">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2.8l2.1 5.7 5.7 2.1-5.7 2.1-2.1 5.7-2.1-5.7-5.7-2.1 5.7-2.1L12 2.8z" />
+                  </svg>
+                </div>
+              )}
+            </div>
+            {!desktopInline && (
+              <div className="flex h-8 w-8 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-100 dark:bg-blue-500/10 dark:text-blue-300 dark:ring-blue-400/10">
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2.8l2.1 5.7 5.7 2.1-5.7 2.1-2.1 5.7-2.1-5.7-5.7-2.1 5.7-2.1L12 2.8z" />
+                </svg>
+              </div>
+            )}
+            {desktopInline && (
+              <button
+                type="button"
+                onClick={() => setShowSettings(true)}
+                className="mt-4 flex w-full items-center gap-3 rounded-2xl border border-slate-200/80 bg-white/70 p-3 text-left transition-colors hover:border-blue-200 hover:bg-blue-50/70 dark:border-white/[0.08] dark:bg-white/[0.03] dark:hover:border-blue-400/20 dark:hover:bg-blue-500/10"
+              >
+                <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-300">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm font-black text-slate-900 dark:text-slate-100">{activeProfile.model || activeProfile.name}</span>
+                  <span className="mt-0.5 block truncate text-[11px] text-slate-500 dark:text-slate-400">{activeProfile.name}</span>
+                </span>
+                <svg className="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            )}
+            </div>
+          </div>
+
+          {desktopInline && (
+            <div className="rounded-[24px] border border-white/80 bg-white/92 p-5 shadow-[0_18px_45px_-34px_rgba(15,23,42,0.48)] backdrop-blur-2xl ring-1 ring-slate-900/[0.04] dark:border-white/[0.08] dark:bg-slate-950/72 dark:ring-white/[0.08]">
+              <div className="mb-3 flex items-center justify-between">
+                <div>
+                  <div className="text-sm font-black text-slate-900 dark:text-slate-100">参考图片</div>
+                  <div className="mt-0.5 text-[11px] text-slate-400 dark:text-slate-500">{inputImages.length}/{API_MAX_IMAGES}</div>
+                </div>
+                <span className="flex h-8 w-8 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-300">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.6-4.6a2 2 0 012.8 0L16 16m-2-2l1.6-1.6a2 2 0 012.8 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </span>
+              </div>
+              {inputImages.length > 0 && renderImageThumbs()}
+              <button
+                type="button"
+                onClick={() => !atImageLimit && fileInputRef.current?.click()}
+                className={`flex w-full items-center justify-center gap-3 rounded-2xl border border-dashed px-4 py-4 text-sm transition-all ${
+                  atImageLimit
+                    ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-300 dark:border-white/[0.06] dark:bg-white/[0.04] dark:text-slate-500'
+                    : 'border-slate-300 bg-slate-50/60 text-slate-500 hover:border-blue-300 hover:bg-blue-50/70 hover:text-blue-600 dark:border-white/[0.1] dark:bg-white/[0.03] dark:text-slate-400 dark:hover:border-blue-400/30 dark:hover:bg-blue-500/10 dark:hover:text-blue-300'
+                }`}
+              >
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                </svg>
+                <span className="font-semibold">点击 / 拖拽上传</span>
+              </button>
+            </div>
+          )}
           {/* 移动端拖动条 */}
           <div
             ref={handleRef}
@@ -2008,11 +2087,11 @@ export default function InputBar() {
               setMobileCollapsed((v) => !v)
             }}
           >
-            <div className={`w-10 h-1 rounded-full bg-gray-300 dark:bg-white/[0.06] transition-transform duration-200 ${mobileCollapsed ? 'scale-x-75' : ''}`} />
+            <div className={`h-1 w-10 rounded-full bg-slate-300 transition-transform duration-200 dark:bg-white/[0.08] ${mobileCollapsed ? 'scale-x-75' : ''}`} />
           </div>
 
           {/* 输入图片行（移动端可折叠） */}
-          {inputImages.length > 0 && (
+          {inputImages.length > 0 && !desktopInline && (
             isMobile ? (
               <>
                 <div className={`collapse-section${mobileCollapsed ? ' collapsed' : ''}`}>
@@ -2032,10 +2111,17 @@ export default function InputBar() {
           )}
 
           {/* 输入框 */}
-          <div className={`relative grid${promptExpanded ? ' min-h-0 flex-1' : ''}`}>
+          <div className={`${desktopInline ? 'rounded-[24px] border border-white/80 bg-white/92 p-5 shadow-[0_18px_45px_-34px_rgba(15,23,42,0.48)] backdrop-blur-2xl ring-1 ring-slate-900/[0.04] dark:border-white/[0.08] dark:bg-slate-950/72 dark:ring-white/[0.08]' : ''}`}>
+            {desktopInline && (
+              <div className="mb-3 flex items-center justify-between">
+                <div className="text-sm font-black text-slate-900 dark:text-slate-100">提示词</div>
+                <div className="text-[11px] text-slate-400 dark:text-slate-500">支持 @ 引用图片</div>
+              </div>
+            )}
+            <div className={`relative grid${promptExpanded ? ' min-h-0 flex-1' : ''}`}>
             {showAtImageMenu && (
-              <div style={{ left: `${menuLeft}px` }} className="absolute bottom-full z-50 mb-2 w-64 overflow-hidden rounded-2xl border border-gray-200/70 bg-white/95 p-1.5 shadow-xl ring-1 ring-black/5 backdrop-blur-xl dark:border-white/[0.08] dark:bg-gray-900/95 dark:ring-white/10">
-                <div className="px-2 pb-1 pt-0.5 text-[11px] text-gray-400 dark:text-gray-500">选择图片引用</div>
+              <div style={{ left: `${menuLeft}px` }} className="absolute bottom-full z-50 mb-2 w-64 overflow-hidden rounded-2xl border border-slate-200/80 bg-white/96 p-1.5 shadow-xl ring-1 ring-black/5 backdrop-blur-xl dark:border-white/[0.08] dark:bg-slate-900/95 dark:ring-white/10">
+                <div className="px-2 pb-1 pt-0.5 text-[11px] text-slate-400 dark:text-slate-500">选择图片引用</div>
                 <div className="max-h-56 overflow-y-auto custom-scrollbar">
                   {atImageOptions.map((option, optionIndex) => (
                     <button
@@ -2049,12 +2135,12 @@ export default function InputBar() {
                       className={`flex w-full items-center gap-2 rounded-xl px-2 py-1.5 text-left text-xs transition-colors ${
                         optionIndex === atImageMenuIndex
                           ? 'bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-300'
-                          : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-white/[0.06]'
+                          : 'text-slate-700 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-white/[0.06]'
                         }`}
                     >
                       <AtImageOptionThumb option={option} />
                       <span className="min-w-0 flex-1 truncate font-medium">{option.label}</span>
-                      {option.type === 'agent-output' && <span className="shrink-0 rounded bg-gray-100 px-1.5 py-0.5 text-[10px] text-gray-500 dark:bg-white/[0.06] dark:text-gray-400">历史</span>}
+                      {option.type === 'agent-output' && <span className="shrink-0 rounded-full bg-slate-100 px-1.5 py-0.5 text-[10px] text-slate-500 dark:bg-white/[0.06] dark:text-slate-400">历史</span>}
                     </button>
                   ))}
                 </div>
@@ -2105,10 +2191,10 @@ export default function InputBar() {
                 syncMentionTagSelection(el)
               }}
               aria-label={promptPlaceholder}
-              className={`col-start-1 row-start-1 min-h-[42px] w-full overflow-hidden ios-rounded-scroll-fix whitespace-pre-wrap break-words rounded-2xl border border-gray-200/60 bg-white/50 pl-4 pr-10 py-3 text-sm leading-relaxed shadow-sm outline-none transition-[border-color,box-shadow] duration-200 focus:ring-1 focus:ring-blue-300/40 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-gray-100 dark:focus:ring-blue-500/30${promptExpanded ? ' !h-full !overflow-y-auto' : ''}`}
+              className={`col-start-1 row-start-1 min-h-[42px] w-full overflow-hidden ios-rounded-scroll-fix whitespace-pre-wrap break-words rounded-[22px] border border-slate-200/80 bg-white/60 pl-4 pr-10 py-3 text-sm leading-relaxed shadow-sm outline-none transition-[border-color,box-shadow] duration-200 focus:border-blue-400 focus:ring-1 focus:ring-blue-500/15 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-100 dark:focus:ring-blue-500/25${promptExpanded ? ' !h-full !overflow-y-auto' : ''}`}
             />
             {prompt.length === 0 && (
-              <div className={`prompt-placeholder col-start-1 row-start-1 pointer-events-none pl-4 pr-10 py-3 text-sm leading-relaxed text-gray-400 dark:text-gray-500${
+              <div className={`prompt-placeholder col-start-1 row-start-1 pointer-events-none pl-4 pr-10 py-3 text-sm leading-relaxed text-slate-400 dark:text-slate-500${
                 isMobile && mobileCollapsed ? ' truncate' : ''
               }`}>
                 {promptPlaceholder}
@@ -2129,7 +2215,7 @@ export default function InputBar() {
                     setClearPromptHover(false)
                     handleClearPrompt()
                   }}
-                  className="flex items-center justify-center rounded-full p-1 text-gray-400 transition-all duration-200 hover:bg-gray-100 hover:text-gray-600 focus:outline-none dark:hover:bg-white/[0.08] dark:hover:text-gray-200"
+                  className="flex items-center justify-center rounded-full p-1 text-slate-400 transition-all duration-200 hover:bg-slate-100 hover:text-slate-600 focus:outline-none dark:hover:bg-white/[0.08] dark:hover:text-slate-200"
                   aria-label="清空文本"
                 >
                   <CloseIcon className="w-3.5 h-3.5" />
@@ -2150,7 +2236,7 @@ export default function InputBar() {
                     setPromptExpanded((expanded) => !expanded)
                     setMobileCollapsed(false)
                   }}
-                  className="flex items-center justify-center rounded-md p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 focus:outline-none dark:hover:bg-white/[0.08] dark:hover:text-gray-200"
+                  className="flex items-center justify-center rounded-md p-1 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 focus:outline-none dark:hover:bg-white/[0.08] dark:hover:text-slate-200"
                   aria-label={promptExpanded ? '恢复输入框' : '展开输入框'}
                   aria-pressed={promptExpanded}
                 >
@@ -2158,15 +2244,25 @@ export default function InputBar() {
                 </button>
               </div>
             )}
+            </div>
           </div>
 
           {/* 参数 + 按钮 */}
-          <div className="mt-3">
+          <div className={desktopInline ? 'rounded-[24px] border border-white/80 bg-white/92 p-5 shadow-[0_18px_45px_-34px_rgba(15,23,42,0.48)] backdrop-blur-2xl ring-1 ring-slate-900/[0.04] dark:border-white/[0.08] dark:bg-slate-950/72 dark:ring-white/[0.08]' : 'mt-3'}>
+            {desktopInline && (
+              <div className="mb-4 flex items-center justify-between">
+                <div>
+                  <div className="text-sm font-black text-slate-900 dark:text-slate-100">高级参数</div>
+                  <div className="mt-0.5 text-[11px] text-slate-400 dark:text-slate-500">精细调控创作效果</div>
+                </div>
+                <button type="button" onClick={() => setParams(DEFAULT_PARAMS)} className="text-xs font-medium text-slate-500 transition-colors hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-300">重置</button>
+              </div>
+            )}
             {/* 桌面端布局 */}
-            <div className="hidden sm:flex items-end justify-between gap-3">
-              {renderParams('grid-cols-6')}
+            <div className="hidden sm:flex items-end justify-between gap-3 lg:flex-col lg:items-stretch">
+              {renderParams('grid-cols-6 lg:grid-cols-1', desktopInline)}
 
-              <div className="flex gap-2 flex-shrink-0 mb-0.5">
+              <div className={`flex gap-2 flex-shrink-0 mb-0.5 lg:mb-0 lg:mt-2 lg:flex-col${desktopInline ? ' lg:hidden' : ''}`}>
                 <div
                   className="relative"
                   onMouseEnter={() => setAttachHover(true)}
@@ -2175,10 +2271,10 @@ export default function InputBar() {
                   <ButtonTooltip visible={attachHover} text={uploadImageTooltipText} />
                   <button
                     onClick={() => !atImageLimit && fileInputRef.current?.click()}
-                    className={`p-2.5 rounded-xl transition-all shadow-sm ${
+                    className={`p-2.5 rounded-xl border border-slate-200/80 transition-all shadow-sm lg:w-full ${
                       atImageLimit
-                        ? 'bg-gray-200 dark:bg-white/[0.04] text-gray-300 dark:text-gray-500 cursor-not-allowed'
-                        : 'bg-gray-200 dark:bg-white/[0.06] hover:bg-gray-300 dark:hover:bg-white/[0.1] text-gray-500 dark:text-gray-300 hover:shadow'
+                        ? 'bg-slate-200 text-slate-300 cursor-not-allowed dark:border-white/[0.06] dark:bg-white/[0.04] dark:text-slate-500'
+                        : 'bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700 hover:shadow dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-slate-300 dark:hover:bg-white/[0.1]'
                     }`}
                     aria-label={uploadImageTooltipText}
                   >
@@ -2196,12 +2292,12 @@ export default function InputBar() {
                   <button
                     onClick={() => activeAgentIsRunning ? stopActiveAgentResponse() : hasSubmitApiConfig ? submitCurrentMode() : setShowSettings(true)}
                     disabled={activeAgentIsRunning ? false : hasSubmitApiConfig ? !canSubmit : false}
-                    className={`p-2.5 rounded-xl transition-all shadow-sm hover:shadow ${
+                    className={`p-2.5 rounded-xl border border-slate-200/80 transition-all shadow-sm hover:shadow lg:flex lg:w-full lg:items-center lg:justify-center lg:gap-2 ${
                       activeAgentIsRunning
                         ? 'bg-red-500 text-white hover:bg-red-600'
                         : !hasSubmitApiConfig
-                        ? 'bg-gray-300 dark:bg-white/[0.06] text-white cursor-pointer'
-                        : 'bg-blue-500 text-white hover:bg-blue-600 disabled:bg-gray-300 dark:disabled:bg-white/[0.04] disabled:opacity-50 disabled:cursor-not-allowed'
+                        ? 'bg-slate-300 text-white cursor-pointer dark:border-white/[0.08] dark:bg-white/[0.06]'
+                        : 'bg-gradient-to-b from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 disabled:bg-slate-300 dark:border-white/[0.08] dark:disabled:bg-white/[0.04] disabled:opacity-50 disabled:cursor-not-allowed'
                     }`}
                     aria-label={submitButtonAriaLabel}
                   >
@@ -2214,10 +2310,40 @@ export default function InputBar() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                       </svg>
                     )}
+                    <span className="hidden text-sm font-bold lg:inline">{activeAgentIsRunning ? '停止生成' : '开始创作'}</span>
                   </button>
                 </div>
               </div>
             </div>
+
+            {desktopInline && (
+              <div>
+                <button
+                  type="button"
+                  onClick={() => activeAgentIsRunning ? stopActiveAgentResponse() : hasSubmitApiConfig ? submitCurrentMode() : setShowSettings(true)}
+                  disabled={activeAgentIsRunning ? false : hasSubmitApiConfig ? !canSubmit : false}
+                  className={`flex w-full items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-sm font-bold transition-all shadow-sm ${
+                    activeAgentIsRunning
+                      ? 'border-red-500 bg-red-500 text-white hover:bg-red-600'
+                      : !hasSubmitApiConfig
+                      ? 'border-slate-200 bg-slate-300 text-white dark:border-white/[0.08] dark:bg-white/[0.06]'
+                      : 'border-slate-200 bg-gradient-to-b from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 dark:border-white/[0.08]'
+                  }`}
+                  aria-label={submitButtonAriaLabel}
+                >
+                  {activeAgentIsRunning ? (
+                    <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                      <rect x="7" y="7" width="10" height="10" rx="1.5" />
+                    </svg>
+                  ) : (
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  )}
+                  <span>{activeAgentIsRunning ? '停止生成' : '开始创作'}</span>
+                </button>
+              </div>
+            )}
 
             {/* 移动端布局 */}
             <div className="sm:hidden flex flex-col gap-2">
@@ -2240,10 +2366,10 @@ export default function InputBar() {
                         setShowMobileUploadMenu(!showMobileUploadMenu)
                       }
                     }}
-                    className={`p-2.5 rounded-xl transition-all shadow-sm flex-shrink-0 ${
+                    className={`p-2.5 rounded-xl border border-slate-200/80 transition-all shadow-sm flex-shrink-0 ${
                       atImageLimit
-                        ? 'bg-gray-200 dark:bg-white/[0.04] text-gray-300 dark:text-gray-500 cursor-not-allowed'
-                        : 'bg-gray-200 dark:bg-white/[0.06] hover:bg-gray-300 dark:hover:bg-white/[0.1] text-gray-500 dark:text-gray-300'
+                        ? 'bg-slate-200 text-slate-300 cursor-not-allowed dark:border-white/[0.06] dark:bg-white/[0.04] dark:text-slate-500'
+                        : 'bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700 dark:border-white/[0.08] dark:bg-white/[0.06] dark:text-slate-300 dark:hover:bg-white/[0.1]'
                     }`}
                     aria-label={uploadImageTooltipText}
                   >
@@ -2264,9 +2390,9 @@ export default function InputBar() {
                         className="fixed inset-0 z-40"
                         onClick={() => setShowMobileUploadMenu(false)}
                       />
-                      <div className="absolute bottom-full left-0 mb-2 w-32 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden z-50 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                      <div className="absolute bottom-full left-0 mb-2 w-32 overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-lg z-50 animate-in fade-in slide-in-from-bottom-2 duration-200 dark:border-white/[0.08] dark:bg-slate-900">
                         <button
-                          className="w-full px-4 py-3 text-left text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 flex items-center gap-2 transition-colors"
+                          className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-white/[0.06]"
                           onClick={() => {
                             setShowMobileUploadMenu(false)
                             cameraInputRef.current?.click()
@@ -2279,7 +2405,7 @@ export default function InputBar() {
                           拍照
                         </button>
                         <button
-                          className="w-full px-4 py-3 text-left text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 flex items-center gap-2 transition-colors"
+                          className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-white/[0.06]"
                           onClick={() => {
                             setShowMobileUploadMenu(false)
                             fileInputRef.current?.click()
@@ -2304,12 +2430,12 @@ export default function InputBar() {
                     onClick={() => activeAgentIsRunning ? stopActiveAgentResponse() : hasSubmitApiConfig ? submitCurrentMode() : setShowSettings(true)}
                     disabled={activeAgentIsRunning ? false : hasSubmitApiConfig ? !canSubmit : false}
                     aria-label={submitButtonAriaLabel}
-                    className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all shadow-sm ${
+                    className={`w-full flex items-center justify-center gap-2 rounded-xl border border-slate-200/80 py-2.5 text-sm font-medium transition-all shadow-sm ${
                       activeAgentIsRunning
                         ? 'bg-red-500 text-white hover:bg-red-600'
                         : !hasSubmitApiConfig
-                        ? 'bg-gray-300 dark:bg-white/[0.06] text-white cursor-pointer'
-                        : 'bg-blue-500 text-white hover:bg-blue-600 disabled:bg-gray-300 dark:disabled:bg-white/[0.04] disabled:opacity-50 disabled:cursor-not-allowed'
+                        ? 'bg-slate-300 text-white cursor-pointer dark:border-white/[0.08] dark:bg-white/[0.06]'
+                        : 'bg-gradient-to-b from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 disabled:bg-slate-300 dark:border-white/[0.08] dark:disabled:bg-white/[0.04] disabled:opacity-50 disabled:cursor-not-allowed'
                     }`}
                   >
                     {activeAgentIsRunning ? (
@@ -2352,7 +2478,6 @@ export default function InputBar() {
             onChange={handleReplaceFileUpload}
           />
         </div>
-      </div>
     </>
   )
 }

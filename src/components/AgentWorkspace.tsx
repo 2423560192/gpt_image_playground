@@ -796,7 +796,7 @@ export default function AgentWorkspace() {
   return (
     <main 
       data-agent-workspace 
-      className="safe-area-x mx-auto flex min-h-[calc(100vh-100px)] flex-col lg:flex-row max-w-7xl lg:gap-3 px-3 lg:px-0 relative overflow-visible transition-all duration-300"
+      className="safe-area-x mx-auto flex min-h-[calc(100vh-100px)] max-w-[1480px] flex-col gap-3 px-3 relative overflow-visible transition-all duration-300 lg:flex-row lg:gap-4 lg:px-6"
     >
       {/* Pull Down Indicator */}
       {pullDownOffset > 0 && !agentMobileHeaderVisible && (
@@ -816,7 +816,7 @@ export default function AgentWorkspace() {
       )}
       
       {/* Left Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 flex w-4/5 max-w-[320px] flex-col border-r border-gray-200 bg-white/95 shadow-2xl backdrop-blur transition-transform duration-300 dark:border-white/[0.08] dark:bg-gray-950/95 lg:hidden ${!sidebarCollapsed ? 'translate-x-0' : '-translate-x-full'}`}>
+      <aside className={`fixed inset-y-0 left-0 z-50 flex w-4/5 max-w-[320px] flex-col border-r border-slate-200/80 bg-white/96 shadow-2xl backdrop-blur-2xl transition-transform duration-300 dark:border-white/[0.08] dark:bg-slate-950/96 lg:hidden ${!sidebarCollapsed ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="pl-[max(1rem,env(safe-area-inset-left))] flex h-full min-h-0 w-full flex-col">
           <div className="safe-area-top shrink-0">
             <div className="flex h-14 items-center justify-between gap-2 px-4">
@@ -906,11 +906,11 @@ export default function AgentWorkspace() {
       </aside>
 
       {/* Center Chat Area */}
-      <section className="min-w-0 flex-1 flex flex-col relative">
+      <section className="min-w-0 flex-1 flex flex-col relative rounded-[28px] border border-slate-200/80 bg-white/55 shadow-[0_18px_60px_-36px_rgba(15,23,42,0.5)] backdrop-blur-xl dark:border-white/[0.08] dark:bg-white/[0.03] dark:shadow-[0_18px_60px_-36px_rgba(0,0,0,0.7)]">
         {/* Mobile Header Toggles */}
         <div className={`sticky top-0 z-20 lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${mobileTopBarVisible ? 'max-h-16 opacity-100 mb-2' : 'max-h-0 opacity-0 mb-0 pointer-events-none'}`}>
           <div
-            className="flex h-14 items-center justify-between border-b border-gray-200 bg-white/80 px-2 backdrop-blur dark:border-white/[0.08] dark:bg-gray-950/80"
+            className="flex h-14 items-center justify-between border-b border-slate-200/80 bg-white/75 px-2 backdrop-blur-xl dark:border-white/[0.08] dark:bg-slate-950/78"
             onTouchStart={handleHeaderTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
@@ -938,13 +938,13 @@ export default function AgentWorkspace() {
 
         <div 
           ref={scrollContainerRef}
-          className="flex-1 space-y-4 overflow-visible pb-[calc(var(--input-bar-clearance,12rem)+1.5rem)] px-1 lg:pt-14 lg:px-4"
+          className="flex-1 space-y-4 overflow-visible px-1 pb-[calc(var(--input-bar-clearance,12rem)+1.5rem)] lg:px-5 lg:pt-14"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
           {!conversation ? (
-            <div className="py-20 text-center text-gray-400">
+            <div className="py-20 text-center text-slate-400 dark:text-slate-500">
               <p className="mb-3">还没有 Agent 对话</p>
               <button type="button" onClick={createConversation} className="rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 transition-colors">创建对话</button>
             </div>
@@ -952,7 +952,7 @@ export default function AgentWorkspace() {
             (() => {
               if (activeMessages.length === 0) {
                 return (
-                  <div className="py-20 text-center text-gray-400">
+                  <div className="py-20 text-center text-slate-400 dark:text-slate-500">
                     <p className="mb-2">开始新的 Agent 对话</p>
                     <p className="text-xs">在底部输入框发送消息即可创建第一轮对话。</p>
                   </div>
@@ -985,13 +985,13 @@ export default function AgentWorkspace() {
                       className={`group flex max-w-[95%] flex-col md:max-w-[85%] lg:max-w-[75%] ${isAssistant ? 'items-start' : 'items-end'}`}
                     >
                       <article 
-                        className={`relative flex min-w-[16rem] max-w-full flex-col rounded-2xl p-4 transition-all duration-200 ${
+                        className={`relative flex min-w-[16rem] max-w-full flex-col rounded-[26px] border p-4 transition-all duration-200 ${
                         isAssistant 
-                          ? 'bg-white/70 dark:bg-white/[0.03] border border-gray-200 dark:border-white/[0.08] rounded-tl-sm hover:bg-white dark:hover:bg-white/[0.04]' 
-                          : `bg-gray-100 dark:bg-[#2A2D31] rounded-tr-sm ${isEditing ? 'ring-2 ring-blue-500/50 dark:ring-blue-400/50' : ''}`
+                          ? 'border-slate-200/80 bg-white/78 rounded-tl-sm hover:bg-white dark:border-white/[0.08] dark:bg-white/[0.03] dark:hover:bg-white/[0.05]' 
+                          : `border-slate-200/80 bg-slate-100/88 rounded-tr-sm dark:border-white/[0.08] dark:bg-slate-800/80 ${isEditing ? 'ring-2 ring-blue-500/35 dark:ring-blue-400/40' : ''}`
                       }`}
                       >
-                    <div className="mb-2 flex items-center justify-between gap-4 text-sm text-gray-500 dark:text-gray-400">
+                    <div className="mb-2 flex items-center justify-between gap-4 text-sm text-slate-500 dark:text-slate-400">
                       <span className="font-medium">
                          <span className={isAssistant ? 'text-blue-600 dark:text-blue-400 font-semibold' : 'text-gray-700 dark:text-gray-200 font-semibold'}>{isAssistant ? 'Agent' : '用户'}</span> <span className="opacity-60 font-normal ml-1">· 第 {round?.index ?? '?'} 轮</span>
                       </span>
@@ -1041,7 +1041,7 @@ export default function AgentWorkspace() {
                         })()}
                       </div>
                     ) : (
-                      <div data-selectable-text className={`text-[15px] leading-relaxed text-gray-800 dark:text-gray-100 ${!isAssistant ? 'select-text' : ''}`}>
+                      <div data-selectable-text className={`text-[15px] leading-relaxed text-slate-800 dark:text-slate-100 ${!isAssistant ? 'select-text' : ''}`}>
                         {isAssistant ? (
                           <>
                             {assistantBlocks.length > 0 ? assistantBlocks.map((block, index) => {
@@ -1093,7 +1093,7 @@ export default function AgentWorkspace() {
                     {!isStreamingAssistant && <div className={`mt-2 flex w-full min-w-fit items-center justify-between gap-3 px-1 transition-opacity duration-200 ${isEditing || hasBranches ? 'opacity-100' : 'opacity-100 lg:opacity-0 lg:group-hover:opacity-100'}`} onClick={e => e.stopPropagation()}>
                       <div className="flex min-w-0 items-center gap-2">
                         {isEditing && (
-                          <div className="inline-flex items-center rounded-md bg-blue-100 px-2 py-1 text-xs text-blue-700 dark:bg-blue-500/20 dark:text-blue-300">
+                          <div className="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-700 dark:bg-blue-500/20 dark:text-blue-300">
                             <span className="truncate">正在编辑</span>
                             <AgentActionButton
                               tooltip="取消编辑"
@@ -1111,7 +1111,7 @@ export default function AgentWorkspace() {
                           </div>
                         )}
                       </div>
-                      <div className="flex items-center gap-2 ml-auto text-gray-400">
+                      <div className="ml-auto flex items-center gap-2 text-slate-400">
                         {!isAssistant && round && hasBranches && siblingIndex >= 0 && (
                           <div className="inline-flex items-center text-sm font-bold text-gray-400 dark:text-gray-500 mr-1">
                             <AgentActionButton tooltip="上一分支" className="p-1 rounded-md hover:bg-gray-200/50 dark:hover:bg-white/10 hover:text-gray-800 dark:hover:text-gray-200 transition-colors" onClick={() => handleSwitchBranch(round, -1)}>
@@ -1207,11 +1207,11 @@ export default function AgentWorkspace() {
                   {renderedMessages}
                   {runningRounds.map((round) => (
                     <div key={`running-${round.id}`} className="flex w-full justify-start mb-6">
-                      <article className="flex min-w-[16rem] max-w-[95%] flex-col rounded-2xl rounded-tl-sm border border-gray-200 bg-white/70 p-4 dark:border-white/[0.08] dark:bg-white/[0.03] md:max-w-[85%] lg:max-w-[75%]">
-                        <div className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                      <article className="flex min-w-[16rem] max-w-[95%] flex-col rounded-[26px] rounded-tl-sm border border-slate-200/80 bg-white/78 p-4 dark:border-white/[0.08] dark:bg-white/[0.03] md:max-w-[85%] lg:max-w-[75%]">
+                        <div className="mb-2 text-sm text-slate-500 dark:text-slate-400">
                           <span className="text-blue-600 dark:text-blue-400 font-semibold">Agent</span> <span className="ml-1 font-normal opacity-60">· 第 {round.index} 轮</span>
                         </div>
-                        <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
+                        <div className="flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
                           <span className="inline-flex items-center gap-1.5">
                             <span>正在生成回复</span>
                             <span className="flex gap-1">
@@ -1233,7 +1233,7 @@ export default function AgentWorkspace() {
 
         <button
           onClick={scrollToAgentBottom}
-          className={`fixed bottom-[calc(var(--input-bar-clearance,12rem)+1.5rem)] left-1/2 -translate-x-1/2 z-30 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 backdrop-blur shadow-[0_2px_12px_rgba(0,0,0,0.1)] border border-gray-200/50 text-gray-500 transition-all duration-300 hover:bg-gray-50 hover:text-gray-800 dark:border-white/[0.08] dark:bg-gray-800/90 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200 ${
+          className={`fixed bottom-[calc(var(--input-bar-clearance,12rem)+1.5rem)] left-1/2 -translate-x-1/2 z-30 flex h-10 w-10 items-center justify-center rounded-full border border-slate-200/80 bg-white/88 text-slate-500 shadow-[0_2px_12px_rgba(0,0,0,0.08)] backdrop-blur-xl transition-all duration-300 hover:bg-white hover:text-slate-900 dark:border-white/[0.08] dark:bg-slate-800/90 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200 ${
             !isScrolledToBottom && activeMessages.length > 0 ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0 pointer-events-none'
           }`}
           aria-label="滚动到底部"

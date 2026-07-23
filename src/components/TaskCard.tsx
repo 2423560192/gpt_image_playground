@@ -327,10 +327,10 @@ export default function TaskCard({
   const isInterrupted = task.status === 'error' && task.error === '已停止生成。'
 
   return (
-    <div className="relative rounded-xl">
+    <div className="relative rounded-[28px]">
       {/* 侧滑底图 */}
       <div
-        className={`absolute inset-0 rounded-xl flex items-center transition-opacity duration-200 pointer-events-none ${
+        className={`absolute inset-0 rounded-[28px] flex items-center transition-opacity duration-200 pointer-events-none ${
           isSwiping || swipeDirection !== 0 || swipeActionActive ? 'opacity-100' : 'opacity-0'
         } ${swipeBgClass} ${
           swipeDirection > 0 ? 'justify-start pl-6' : 'justify-end pr-6'
@@ -347,16 +347,16 @@ export default function TaskCard({
 
       <div
         ref={cardRef}
-        className={`relative bg-white dark:bg-gray-900 rounded-xl border overflow-hidden cursor-pointer touch-pan-y will-change-transform duration-200 hover:shadow-lg dark:hover:bg-gray-800/80 ${
+        className={`relative overflow-hidden cursor-pointer touch-pan-y will-change-transform rounded-[28px] border bg-white/88 shadow-[0_1px_2px_rgba(15,23,42,0.05),0_10px_30px_-20px_rgba(15,23,42,0.35)] duration-200 hover:bg-white hover:shadow-[0_18px_48px_-24px_rgba(15,23,42,0.25),0_6px_16px_-8px_rgba(15,23,42,0.12)] dark:bg-slate-900/84 dark:shadow-[0_1px_2px_rgba(0,0,0,0.28),0_14px_38px_-22px_rgba(0,0,0,0.65)] dark:hover:bg-slate-900 dark:hover:shadow-[0_18px_44px_-22px_rgba(0,0,0,0.72),0_8px_18px_-10px_rgba(0,0,0,0.42)] ${
           isSwiping ? '!bg-white dark:!bg-gray-900' : ''
         } ${
           !isSwiping ? 'transition-[box-shadow,border-color,background-color,transform]' : 'transition-[box-shadow,border-color,background-color]'
         } ${
           task.status === 'running'
-            ? 'border-blue-400 generating'
+            ? 'border-blue-400/70 generating ring-1 ring-blue-500/10'
             : isSelected
-            ? 'border-blue-500 shadow-md ring-2 ring-blue-500/50'
-            : 'border-gray-200 dark:border-white/[0.08] hover:border-gray-300 dark:hover:border-white/[0.18]'
+            ? 'border-blue-500/70 shadow-md ring-2 ring-blue-500/35'
+            : 'border-slate-200/80 dark:border-white/[0.08] hover:border-slate-300/80 dark:hover:border-white/[0.18]'
         }`}
         onClick={(e) => {
           if (Date.now() < suppressClickUntilRef.current) {
@@ -392,7 +392,7 @@ export default function TaskCard({
       >
         {/* 选中时的角标 */}
       {isSelected && (
-        <div className="absolute top-2 right-2 z-10 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center shadow-sm">
+        <div className="absolute top-2 right-2 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 shadow-sm">
           <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
           </svg>
@@ -400,7 +400,7 @@ export default function TaskCard({
       )}
       <div className="flex h-40">
         {/* 左侧图片区域 */}
-        <div className="w-40 min-w-[10rem] h-full bg-gray-100 dark:bg-black/20 relative flex items-center justify-center overflow-hidden flex-shrink-0">
+        <div className="relative flex h-full w-40 min-w-[10rem] flex-shrink-0 items-center justify-center overflow-hidden bg-slate-100/90 dark:bg-slate-950/40">
           {task.status === 'running' && streamPreviewSrc && (
             <>
               <img
@@ -411,7 +411,7 @@ export default function TaskCard({
                 onError={() => setStreamPreviewLoaded(false)}
               />
               {streamPreviewLoaded && (
-                <span className="absolute top-1.5 right-1.5 flex items-center gap-1 rounded bg-blue-500 px-1.5 py-0.5 text-[10px] font-medium text-white backdrop-blur-sm sm:text-xs">
+                <span className="absolute top-1.5 right-1.5 flex items-center gap-1 rounded-full bg-blue-500 px-1.5 py-0.5 text-[10px] font-medium text-white backdrop-blur-sm sm:text-xs">
                   预览
                 </span>
               )}
@@ -492,7 +492,7 @@ export default function TaskCard({
                 alt=""
               />
               {(hasPartialOutputFailure || task.outputImages.length > 1) && (
-                <span className="absolute bottom-1 right-1 bg-black/60 text-white text-xs px-1.5 py-0.5 rounded">
+                <span className="absolute bottom-1 right-1 rounded-full bg-black/60 px-1.5 py-0.5 text-xs text-white backdrop-blur-sm">
                   {hasPartialOutputFailure ? <>{requestedOutputCount} | <span className="font-semibold text-yellow-300">{outputSuccessCount}</span></> : task.outputImages.length}
                 </span>
               )}
@@ -536,7 +536,7 @@ export default function TaskCard({
         </div>
 
         {/* 右侧信息区域 */}
-        <div className="flex-1 p-3 flex flex-col min-w-0">
+        <div className="flex min-w-0 flex-1 flex-col p-3">
           <div className="flex-1 min-h-0 mb-2 overflow-hidden">
             {showPendingPrompt ? (
               <div className="leading-relaxed">
@@ -544,7 +544,7 @@ export default function TaskCard({
                 <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">输入内容将在响应完成时接收</p>
               </div>
             ) : (
-              <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed line-clamp-3">
+              <p className="line-clamp-3 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
                 {task.prompt || '(无提示词)'}
               </p>
             )}
@@ -553,7 +553,7 @@ export default function TaskCard({
             {/* 参数与信息：横向滚动 */}
             <div 
               data-tag-scroll-area
-              className="flex overflow-x-auto hide-scrollbar pt-0.5 gap-1.5 whitespace-nowrap mask-edge-r min-w-0 pr-2"
+              className="flex min-w-0 gap-1.5 whitespace-nowrap overflow-x-auto hide-scrollbar mask-edge-r pt-0.5 pr-2"
               onTouchStart={(e) => e.stopPropagation()}
               onTouchMove={(e) => e.stopPropagation()}
               onTouchEnd={(e) => e.stopPropagation()}
@@ -562,7 +562,7 @@ export default function TaskCard({
               {/* API Name */}
               {(task.apiProfileName || task.apiProvider) && (
                 <span 
-                  className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-gray-100 dark:bg-white/[0.04] text-gray-600 dark:text-gray-300 text-xs flex-shrink-0"
+                  className="flex flex-shrink-0 items-center gap-1 rounded-full border border-slate-200/70 bg-slate-100/75 px-1.5 py-0.5 text-xs text-slate-600 dark:border-white/[0.06] dark:bg-white/[0.04] dark:text-slate-300"
                   title={task.apiProfileName || task.apiProvider}
                 >
                   <CodeIcon className="w-3 h-3 flex-shrink-0 text-gray-400" />
@@ -574,7 +574,7 @@ export default function TaskCard({
               {/* Model */}
               {showModel && (
                 <span 
-                  className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-gray-100 dark:bg-white/[0.04] text-gray-600 dark:text-gray-300 text-xs flex-shrink-0"
+                  className="flex flex-shrink-0 items-center gap-1 rounded-full border border-slate-200/70 bg-slate-100/75 px-1.5 py-0.5 text-xs text-slate-600 dark:border-white/[0.06] dark:bg-white/[0.04] dark:text-slate-300"
                   title={task.apiModel}
                 >
                   <svg className="w-3 h-3 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -587,7 +587,7 @@ export default function TaskCard({
               )}
               {/* Mask */}
               {task.maskImageId && (
-                <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs flex-shrink-0">
+                <span className="flex flex-shrink-0 items-center gap-1 rounded-full bg-blue-50 px-1.5 py-0.5 text-xs text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                   </svg>
@@ -596,26 +596,26 @@ export default function TaskCard({
               )}
               {/* Transparent background */}
               {showTransparentOutput && (
-                <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs flex-shrink-0">
+                <span className="flex flex-shrink-0 items-center gap-1 rounded-full bg-emerald-50 px-1.5 py-0.5 text-xs text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
                   <TransparentBgIcon className="w-3 h-3 flex-shrink-0" />
                   透明背景
                 </span>
               )}
               {/* Params: only show if not default or mismatch */}
               {showQuality && (
-                <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-gray-100 dark:bg-white/[0.04] text-xs flex-shrink-0">
+                <span className="flex flex-shrink-0 items-center gap-1 rounded-full border border-slate-200/70 bg-slate-100/75 px-1.5 py-0.5 text-xs dark:border-white/[0.06] dark:bg-white/[0.04]">
                   <span className="text-gray-400 dark:text-gray-500">质量</span>
                   {qualityDisplay.isMismatch ? <ActualValueBadge value={qualityDisplay.displayValue} className="px-1 rounded-sm" /> : <span className="text-gray-600 dark:text-gray-300">{qualityDisplay.displayValue}</span>}
                 </span>
               )}
               {showSize && (
-                <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-gray-100 dark:bg-white/[0.04] text-xs flex-shrink-0">
+                <span className="flex flex-shrink-0 items-center gap-1 rounded-full border border-slate-200/70 bg-slate-100/75 px-1.5 py-0.5 text-xs dark:border-white/[0.06] dark:bg-white/[0.04]">
                   <span className="text-gray-400 dark:text-gray-500">尺寸</span>
                   {sizeDisplay.isMismatch ? <ActualValueBadge value={sizeDisplay.displayValue} className="px-1 rounded-sm" /> : <span className="text-gray-600 dark:text-gray-300">{sizeDisplay.displayValue}</span>}
                 </span>
               )}
               {showFormat && (
-                <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-gray-100 dark:bg-white/[0.04] text-xs flex-shrink-0">
+                <span className="flex flex-shrink-0 items-center gap-1 rounded-full border border-slate-200/70 bg-slate-100/75 px-1.5 py-0.5 text-xs dark:border-white/[0.06] dark:bg-white/[0.04]">
                   <span className="text-gray-400 dark:text-gray-500">格式</span>
                   {formatDisplay.isMismatch ? <ActualValueBadge value={formatDisplay.displayValue} className="px-1 rounded-sm" /> : <span className="text-gray-600 dark:text-gray-300">{formatDisplay.displayValue}</span>}
                 </span>
@@ -641,7 +641,7 @@ export default function TaskCard({
                 <TaskActionButton
                   tooltip="重试任务"
                   onClick={() => retryTask(task)}
-                  className="p-1.5 rounded-md hover:bg-blue-50 dark:hover:bg-blue-950/30 text-gray-400 hover:text-blue-500 transition"
+                  className="p-1.5 rounded-xl border border-transparent text-slate-400 transition hover:border-blue-500/10 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-500/10 dark:hover:text-blue-300"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -651,10 +651,10 @@ export default function TaskCard({
               <TaskActionButton
                 tooltip={task.isFavorite ? '编辑收藏夹' : '收藏任务'}
                 onClick={() => openFavoritePicker([task.id])}
-                className={`p-1.5 rounded-md transition ${
+                className={`p-1.5 rounded-xl border border-transparent transition ${
                   task.isFavorite
-                    ? 'text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-500/10'
-                    : 'text-gray-400 hover:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-500/10'
+                    ? 'text-yellow-500 hover:border-yellow-500/10 hover:bg-yellow-50 dark:hover:bg-yellow-500/10'
+                    : 'text-slate-400 hover:border-yellow-500/10 hover:text-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-500/10'
                 }`}
               >
                 <svg
@@ -674,7 +674,7 @@ export default function TaskCard({
               <TaskActionButton
                 tooltip="复用配置"
                 onClick={onReuse}
-                className="p-1.5 rounded-md hover:bg-blue-50 dark:hover:bg-blue-950/30 text-gray-400 hover:text-blue-500 transition"
+                className="p-1.5 rounded-xl border border-transparent text-slate-400 transition hover:border-blue-500/10 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-500/10 dark:hover:text-blue-300"
               >
                 <svg
                   className="w-4 h-4"
@@ -693,7 +693,7 @@ export default function TaskCard({
               <TaskActionButton
                 tooltip="编辑输出"
                 onClick={onEditOutputs}
-                className="p-1.5 rounded-md hover:bg-green-50 dark:hover:bg-green-950/30 text-gray-400 hover:text-green-500 transition disabled:opacity-30"
+                className="p-1.5 rounded-xl border border-transparent text-slate-400 transition hover:border-green-500/10 hover:bg-green-50 hover:text-green-600 disabled:opacity-30 dark:hover:bg-green-500/10 dark:hover:text-green-300"
                 disabled={!task.outputImages?.length}
               >
                 <svg
@@ -713,7 +713,7 @@ export default function TaskCard({
               <TaskActionButton
                 tooltip="删除任务"
                 onClick={onDelete}
-                className="p-1.5 rounded-md hover:bg-red-50 dark:hover:bg-red-950/30 text-gray-400 hover:text-red-500 transition"
+                className="p-1.5 rounded-xl border border-transparent text-slate-400 transition hover:border-red-500/10 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-500/10 dark:hover:text-red-300"
               >
                 <svg
                   className="w-4 h-4"

@@ -254,26 +254,27 @@ export default function TaskGrid() {
 
   if (!filteredTasks.length) {
     return (
-      <div className="text-center py-20 text-gray-400 dark:text-gray-500">
+      <div className="mx-auto flex min-h-[38rem] rounded-[24px] border border-white/80 bg-white/86 px-6 py-20 text-center text-slate-400 shadow-[0_28px_90px_-62px_rgba(15,23,42,0.6)] backdrop-blur-2xl ring-1 ring-slate-900/[0.03] dark:border-white/[0.08] dark:bg-slate-950/45 dark:text-slate-500 dark:ring-white/[0.06] sm:min-h-[38rem] lg:min-h-[calc(100vh-13rem)]">
         {searchQuery || filterFavorite ? (
-          <p className="text-sm">没有找到匹配的任务</p>
+          <div className="m-auto flex max-w-sm flex-col items-center">
+            <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-3xl bg-slate-100 text-slate-300 ring-1 ring-slate-200/80 dark:bg-white/[0.04] dark:text-slate-600 dark:ring-white/[0.08]">
+              <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-5.2-5.2m1.7-4.3a6 6 0 11-12 0 6 6 0 0112 0z" />
+              </svg>
+            </div>
+            <p className="text-base font-bold text-slate-700 dark:text-slate-200">没有找到匹配的任务</p>
+            <p className="mt-2 text-sm text-slate-400 dark:text-slate-500">换个关键词或筛选条件试试</p>
+          </div>
         ) : (
-          <>
-            <svg
-              className="w-16 h-16 mx-auto mb-4 text-gray-200 dark:text-gray-700"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1}
-                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-            <p className="text-sm">输入提示词开始生成图片</p>
-          </>
+          <div className="m-auto flex max-w-sm flex-col items-center">
+            <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-3xl bg-blue-50 text-blue-200 ring-1 ring-blue-100 dark:bg-blue-500/10 dark:text-blue-500/35 dark:ring-blue-400/10">
+              <svg className="h-9 w-9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3zm6.5 11l.9 2.6L22 17.5l-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9.9-2.6z" />
+              </svg>
+            </div>
+            <p className="text-lg font-black tracking-tight text-slate-800 dark:text-slate-100">作品将展示在这里</p>
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">输入你的提示词，开始 AI 图片创作</p>
+          </div>
         )}
       </div>
     )
@@ -283,9 +284,9 @@ export default function TaskGrid() {
     <div 
       ref={rootRef}
       data-task-grid-root
-      className="relative min-h-[50vh]"
+      className="relative min-h-[38rem] rounded-[24px] border border-slate-200/80 bg-white/55 p-4 shadow-[0_24px_80px_-64px_rgba(15,23,42,0.55)] backdrop-blur-xl dark:border-white/[0.08] dark:bg-white/[0.03] lg:min-h-[calc(100vh-13rem)]"
     >
-      <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pb-10">
+      <div ref={gridRef} className="grid grid-cols-1 gap-4 pb-10 sm:grid-cols-2 xl:grid-cols-3">
         {filteredTasks.map((task) => (
           <div key={task.id} className="task-card-wrapper" data-task-id={task.id}>
             <TaskCard
@@ -314,7 +315,7 @@ export default function TaskGrid() {
       </div>
       {selectionBox && (
         <div
-          className="fixed bg-blue-500/20 border border-blue-500/50 pointer-events-none z-[30]"
+          className="fixed z-[30] pointer-events-none border border-blue-500/40 bg-blue-500/15 shadow-[0_0_0_1px_rgba(59,130,246,0.12)]"
           style={{
             left: Math.min(selectionBox.startPageX, selectionBox.currentPageX) - window.scrollX,
             top: Math.min(selectionBox.startPageY, selectionBox.currentPageY) - window.scrollY,

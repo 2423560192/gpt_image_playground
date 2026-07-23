@@ -13,6 +13,7 @@ interface HintTooltipState {
 
 export default function InputParamsPanel({
   cols,
+  expanded = false,
   params,
   setParams,
   activeProfile,
@@ -53,6 +54,7 @@ export default function InputParamsPanel({
   onOpenSizePicker,
 }: {
   cols: string
+  expanded?: boolean
   params: TaskParams
   setParams: (patch: Partial<TaskParams>) => void
   activeProfile: ApiProfile
@@ -92,6 +94,269 @@ export default function InputParamsPanel({
   qualityHint: HintTooltipState
   onOpenSizePicker: () => void
 }) {
+  if (expanded) {
+    const optionClass = (active: boolean, disabled = false) => `flex min-h-9 flex-1 items-center justify-center rounded-xl px-2 text-[11px] font-semibold transition-all ${
+      disabled
+        ? 'cursor-not-allowed text-slate-300 dark:text-slate-600'
+        : active
+          ? 'bg-white text-blue-600 shadow-sm ring-1 ring-slate-900/[0.06] dark:bg-slate-700 dark:text-blue-300 dark:ring-white/[0.08]'
+          : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
+    }`
+    const fieldClass = 'relative space-y-2'
+    const labelClass = 'block text-xs font-bold text-slate-700 dark:text-slate-300'
+    const groupClass = 'flex gap-1 rounded-2xl bg-slate-100/90 p-1 dark:bg-white/[0.05]'
+    const qualityValue = activeProfile.codexCli
+      ? 'auto'
+      : isFalProvider && params.quality === 'auto'
+        ? 'high'
+        : params.quality
+
+    return (
+      <div className="space-y-5 text-xs">
+        <label
+          className={fieldClass}
+          onMouseEnter={sizeHint.show}
+          onMouseLeave={sizeHint.hide}
+          onTouchStart={sizeHint.startTouch}
+          onTouchEnd={sizeHint.clearTimer}
+          onTouchCancel={sizeHint.hide}
+          onClick={sizeHint.show}
+        >
+          <span className={labelClass}>画面尺寸</span>
+          <button
+            type="button"
+            onClick={() => {
+              dismissAllTooltips()
+              onOpenSizePicker()
+            }}
+            className="flex w-full items-center justify-between rounded-2xl border border-slate-200/80 bg-white/70 px-4 py-3 text-left font-mono text-xs text-slate-700 shadow-sm transition-all hover:border-blue-300 hover:bg-white dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-200 dark:hover:border-blue-400/30 dark:hover:bg-white/[0.06]"
+          >
+            <span>{displaySize}</span>
+            <svg className="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+          <ButtonTooltip
+            visible={isFalTextToImage && sizeHint.visible}
+            text={<>fal.ai 的文生图模式不支持 <code className="rounded bg-white/10 px-1 py-0.5 font-mono">auto</code> 参数</>}
+          />
+        </label>
+
+        <div
+          className={fieldClass}
+          onMouseEnter={qualityHint.show}
+          onMouseLeave={qualityHint.hide}
+          onTouchStart={qualityHint.startTouch}
+          onTouchEnd={qualityHint.clearTimer}
+          onTouchCancel={qualityHint.hide}
+          onClick={qualityHint.show}
+        >
+          <span className={labelClass}>生成质量</span>
+          <div className={groupClass}>
+            {qualityOptions.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                disabled={activeProfile.codexCli}
+                onClick={() => setParams({ quality: option.value as TaskParams['quality'] })}
+                className={optionClass(qualityValue === option.value, activeProfile.codexCli)}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+          <ButtonTooltip
+            visible={(activeProfile.codexCli || isFalProvider) && qualityHint.visible}
+            text={isFalProvider ? <>fal.ai 不支持 <code className="rounded bg-white/10 px-1 py-0.5 font-mono">auto</code> 质量参数</> : 'Codex CLI 不支持质量参数'}
+          />
+        </div>
+
+        <div className={fieldClass}>
+          <span className={labelClass}>输出格式</span>
+          <div className={groupClass}>
+            {[
+              { label: 'PNG', value: 'png' },
+              { label: 'JPEG', value: 'jpeg' },
+              { label: 'WebP', value: 'webp' },
+            ].map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setParams({
+                  output_format: option.value as TaskParams['output_format'],
+                  ...(option.value === 'png' ? { output_compression: null } : { transparent_output: false }),
+                })}
+                className={optionClass(params.output_format === option.value)}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {showTransparentOutputControl ? (
+          <div
+            className={fieldClass}
+            onMouseEnter={transparentOutputHint.show}
+            onMouseLeave={transparentOutputHint.hide}
+            onTouchStart={transparentOutputHint.startTouch}
+            onTouchEnd={transparentOutputHint.clearTimer}
+            onTouchCancel={transparentOutputHint.hide}
+            onClick={transparentOutputHint.show}
+          >
+            <div className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200/80 bg-white/55 px-4 py-3 dark:border-white/[0.08] dark:bg-white/[0.03]">
+              <div>
+                <span className={labelClass}>透明背景</span>
+                <span className="mt-1 block text-[10px] text-slate-400 dark:text-slate-500">移除生成图片背景</span>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={transparentOutputEnabled}
+                disabled={!transparentOutputAvailable}
+                onClick={() => {
+                  if (!transparentOutputAvailable) return
+                  onTransparentOutputMenuOpenChange(false)
+                  setParams({ transparent_output: !transparentOutputEnabled, output_compression: null })
+                }}
+                className={`relative h-6 w-11 rounded-full transition-colors ${
+                  !transparentOutputAvailable
+                    ? 'cursor-not-allowed bg-slate-200 opacity-50 dark:bg-white/[0.08]'
+                    : transparentOutputEnabled
+                      ? 'bg-blue-500'
+                      : 'bg-slate-300 dark:bg-slate-700'
+                }`}
+              >
+                <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${transparentOutputEnabled ? 'translate-x-5' : 'translate-x-0.5'}`} />
+              </button>
+            </div>
+            <ButtonTooltip visible={transparentOutputHint.visible} text="基于提示词与后处理，并非模型原生生成" />
+          </div>
+        ) : (
+          <label
+            className={fieldClass}
+            onMouseEnter={compressionHint.show}
+            onMouseLeave={compressionHint.hide}
+            onTouchStart={compressionHint.startTouch}
+            onTouchEnd={compressionHint.clearTimer}
+            onTouchCancel={compressionHint.hide}
+            onClick={compressionHint.show}
+          >
+            <span className={labelClass}>输出压缩率</span>
+            <div className="relative">
+              <input
+                value={outputCompressionInput}
+                onChange={(e) => setOutputCompressionInput(e.target.value)}
+                onBlur={commitOutputCompression}
+                disabled={compressionDisabled}
+                type="number"
+                min={0}
+                max={100}
+                placeholder="0-100"
+                className={`w-full rounded-2xl border border-slate-200/80 px-4 py-3 pr-10 text-xs shadow-sm outline-none transition-all dark:border-white/[0.08] ${
+                  compressionDisabled
+                    ? 'cursor-not-allowed bg-slate-100/70 text-slate-400 dark:bg-white/[0.04]'
+                    : 'bg-white/70 text-slate-700 focus:border-blue-400 dark:bg-white/[0.03] dark:text-slate-200'
+                }`}
+              />
+              <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">%</span>
+            </div>
+            <ButtonTooltip visible={compressionHint.visible} text={isFalProvider ? 'fal.ai 不支持压缩率参数' : '仅 JPEG 和 WebP 支持压缩率'} />
+          </label>
+        )}
+
+        <div
+          className={fieldClass}
+          onMouseEnter={moderationHint.show}
+          onMouseLeave={moderationHint.hide}
+          onTouchStart={moderationHint.startTouch}
+          onTouchEnd={moderationHint.clearTimer}
+          onTouchCancel={moderationHint.hide}
+          onClick={moderationHint.show}
+        >
+          <span className={labelClass}>内容审核</span>
+          <div className={groupClass}>
+            {[
+              { label: '自动', value: 'auto' },
+              { label: '低敏感度', value: 'low' },
+            ].map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                disabled={moderationDisabled}
+                onClick={() => setParams({ moderation: option.value as TaskParams['moderation'] })}
+                className={optionClass((moderationDisabled ? 'auto' : params.moderation) === option.value, moderationDisabled)}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+          <ButtonTooltip visible={moderationDisabled && moderationHint.visible} text="fal.ai 不支持审核参数" />
+        </div>
+
+        <label
+          className={fieldClass}
+          onMouseEnter={() => {
+            showAgentNHint()
+            streamConcurrentHint.show()
+          }}
+          onMouseLeave={() => {
+            hideNLimitHint()
+            streamConcurrentHint.hide()
+          }}
+          onTouchStart={() => {
+            startAgentNHintTouch()
+            streamConcurrentHint.startTouch()
+          }}
+          onTouchEnd={() => {
+            clearAgentNHintTouchTimer()
+            streamConcurrentHint.clearTimer()
+          }}
+          onTouchCancel={() => {
+            clearAgentNHintTouchTimer()
+            hideNLimitHint()
+            streamConcurrentHint.hide()
+          }}
+          onClick={() => {
+            showAgentNHint()
+            streamConcurrentHint.show()
+          }}
+        >
+          <div className="flex items-center justify-between">
+            <span className={labelClass}>生成数量</span>
+            {!agentAutoImageCount && <span className="text-[10px] text-slate-400">最多 {outputImageLimit} 张</span>}
+          </div>
+          <input
+            value={nInput}
+            onChange={(e) => handleNInputChange(e.target.value)}
+            onFocus={() => setNInputFocused(true)}
+            onBlur={() => {
+              setNInputFocused(false)
+              commitN()
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'ArrowUp') handleNLimitIncreaseAttempt(() => e.preventDefault())
+            }}
+            onWheel={(e) => {
+              if (e.deltaY < 0) handleNLimitIncreaseAttempt(() => e.preventDefault())
+            }}
+            disabled={agentAutoImageCount}
+            type={agentAutoImageCount ? 'text' : 'number'}
+            min={agentAutoImageCount ? undefined : 1}
+            max={agentAutoImageCount ? undefined : outputImageLimit}
+            className={`w-full rounded-2xl border border-slate-200/80 px-4 py-3 text-xs shadow-sm outline-none transition-all dark:border-white/[0.08] ${
+              agentAutoImageCount
+                ? 'cursor-not-allowed bg-slate-100/70 text-slate-400 dark:bg-white/[0.04]'
+                : 'bg-white/70 text-slate-700 focus:border-blue-400 dark:bg-white/[0.03] dark:text-slate-200'
+            }`}
+          />
+          <ButtonTooltip visible={nLimitHint.visible} text={nLimitHintText} />
+          <ButtonTooltip visible={streamConcurrentByN && streamConcurrentHint.visible && !nLimitHint.visible} text="数量大于 1 时会将多图生成拆分为并发单图" />
+        </label>
+      </div>
+    )
+  }
+
   return (
     <div className={`grid ${cols} gap-2 text-xs flex-1`}>
       <label
@@ -188,10 +453,7 @@ export default function InputParamsPanel({
             className={selectClass}
             onOpenChange={onTransparentOutputMenuOpenChange}
           />
-          <ButtonTooltip
-            visible={transparentOutputHint.visible}
-            text="基于提示词与后处理，并非模型原生生成"
-          />
+          <ButtonTooltip visible={transparentOutputHint.visible} text="基于提示词与后处理，并非模型原生生成" />
         </label>
       ) : (
         <label
@@ -217,12 +479,9 @@ export default function InputParamsPanel({
               compressionDisabled
                 ? 'bg-gray-100/50 dark:bg-white/[0.05] opacity-50 cursor-not-allowed'
                 : 'bg-white/50 dark:bg-white/[0.03]'
-              }`}
+            }`}
           />
-          <ButtonTooltip
-            visible={compressionHint.visible}
-            text={isFalProvider ? 'fal.ai 不支持压缩率参数' : '仅 JPEG 和 WebP 支持压缩率'}
-          />
+          <ButtonTooltip visible={compressionHint.visible} text={isFalProvider ? 'fal.ai 不支持压缩率参数' : '仅 JPEG 和 WebP 支持压缩率'} />
         </label>
       )}
       <label
@@ -250,10 +509,7 @@ export default function InputParamsPanel({
             ? 'px-3 py-1.5 rounded-xl border border-gray-200/60 dark:border-white/[0.08] bg-gray-100/50 dark:bg-white/[0.05] opacity-50 cursor-not-allowed text-xs transition-all duration-200 shadow-sm'
             : selectClass}
         />
-        <ButtonTooltip
-          visible={moderationDisabled && moderationHint.visible}
-          text="fal.ai 不支持审核参数"
-        />
+        <ButtonTooltip visible={moderationDisabled && moderationHint.visible} text="fal.ai 不支持审核参数" />
       </label>
       <label
         className="relative flex flex-col gap-0.5"
@@ -278,14 +534,10 @@ export default function InputParamsPanel({
             commitN()
           }}
           onKeyDown={(e) => {
-            if (e.key === 'ArrowUp') {
-              handleNLimitIncreaseAttempt(() => e.preventDefault())
-            }
+            if (e.key === 'ArrowUp') handleNLimitIncreaseAttempt(() => e.preventDefault())
           }}
           onWheel={(e) => {
-            if (e.deltaY < 0) {
-              handleNLimitIncreaseAttempt(() => e.preventDefault())
-            }
+            if (e.deltaY < 0) handleNLimitIncreaseAttempt(() => e.preventDefault())
           }}
           disabled={agentAutoImageCount}
           type={agentAutoImageCount ? 'text' : 'number'}

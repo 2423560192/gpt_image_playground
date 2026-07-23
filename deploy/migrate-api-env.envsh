@@ -1,16 +1,7 @@
 #!/bin/sh
 
-# 兼容旧版本 Docker 环境变量：API_URL 同时作为两个新变量的兜底值。
-DOCKER_LEGACY_API_URL_USED=false
-if [ -n "$API_URL" ]; then
-    DOCKER_LEGACY_API_URL_USED=true
-fi
+# 简化配置：只用 API_URL 一个环境变量
+# 同时用于：1) 前端显示的默认 API 地址  2) Nginx 代理转发的目标地址
+API_URL=${API_URL:-https://ai.xingchai.xyz/}
 
-if [ "${DEFAULT_API_URL+x}" != "x" ]; then
-    DEFAULT_API_URL=${API_URL:-https://api.openai.com/v1}
-fi
-API_PROXY_URL=${API_PROXY_URL:-${API_URL:-https://api.openai.com/v1}}
-
-export DEFAULT_API_URL
-export API_PROXY_URL
-export DOCKER_LEGACY_API_URL_USED
+export API_URL

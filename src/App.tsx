@@ -4,7 +4,7 @@ import { useStore } from './store'
 import { activateFirstImportedProfile, buildSettingsFromUrlParams, clearUrlSettingParams, hasUrlSettingParams } from './lib/urlSettings'
 import { isDefaultConfigOnlyEnabled, mergeImportedSettings } from './lib/apiProfiles'
 import { getCustomProviderConfigUrl, loadCustomProviderSettingsFromUrl } from './lib/customProviderConfigUrl'
-import { useDockerApiUrlMigrationNotice } from './hooks/useDockerApiUrlMigrationNotice'
+
 import type { AppSettings } from './types'
 import Header from './components/Header'
 import SearchBar from './components/SearchBar'
@@ -33,7 +33,6 @@ export default function App() {
   const setDetailTaskId = useStore((s) => s.setDetailTaskId)
   const recentTasks = useMemo(() => [...tasks].sort((a, b) => b.createdAt - a.createdAt).slice(0, 5), [tasks])
   const [isDesktopLayout, setIsDesktopLayout] = useState(() => window.innerWidth >= 1024)
-  useDockerApiUrlMigrationNotice()
   useGlobalClickSuppression()
 
   useEffect(() => {

@@ -27,7 +27,7 @@ ENV LOCK_API_PROXY=false
 ENV SHOW_DEFAULT_CONFIG_ONLY=false
 ENV PROXY_PORT=3001
 
-RUN apk add --no-cache nginx && \
+RUN apk add --no-cache nginx gettext && \
     mkdir -p /run/nginx
 
 COPY --from=build /app/dist /usr/share/nginx/html

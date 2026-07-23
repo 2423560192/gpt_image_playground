@@ -1,5 +1,6 @@
 @import url('https://fontsapi.zeoseven.com/442/main/result.css');
 @import url('https://cdn.jsdelivr.net/npm/@lobehub/webfont-harmony-sans-sc@1.0.0/css/index.css');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -17,8 +18,9 @@
   --primary-foreground: 0 0% 100%;
   --sidebar: 220 36% 97%;
   --sidebar-foreground: 222 47% 11%;
-  --font-ui-sans: 'HarmonyOS Sans SC', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  --font-mono: 'Maple Mono', 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
+  --font-ui-sans: 'HarmonyOS Sans SC', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'HarmonyOS Sans SC', 'Noto Sans SC', 'PingFang SC', system-ui, sans-serif;
+  --font-mono: 'Maple Mono', 'Cascadia Code', 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
   --safe-area-top: env(safe-area-inset-top, 0px);
   --safe-area-right: env(safe-area-inset-right, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
@@ -38,7 +40,14 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  font-feature-settings: 'cv02', 'cv03', 'cv04';
+  font-family: var(--font-ui-sans);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.65;
+  letter-spacing: 0.01em;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'tnum', 'lnum', 'pnum', 'kern', 'liga', 'clig';
+  -webkit-font-feature-settings: 'cv02', 'cv03', 'cv04', 'tnum', 'lnum', 'pnum', 'kern', 'liga', 'clig';
+  font-variant-numeric: tabular-nums;
   background-color: hsl(var(--background));
   background-image:
     radial-gradient(1100px 520px at 50% -12%, rgba(59, 130, 246, 0.18), transparent 58%),
@@ -47,6 +56,34 @@ body {
     linear-gradient(180deg, rgba(239, 246, 255, 0.88), rgba(248, 250, 252, 0.76) 42%, rgba(248, 250, 252, 0.92));
   background-attachment: fixed;
   position: relative;
+}
+
+/* 标题字体优化 */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: hsl(var(--foreground));
+}
+
+h1 { font-size: 1.75rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.25rem; }
+h4 { font-size: 1.125rem; }
+h5, h6 { font-size: 1rem; }
+
+/* 按钮字体优化 */
+button, [role="button"] {
+  font-weight: 500;
+  letter-spacing: 0.015em;
+}
+
+/* 输入框字体优化 */
+input, textarea, select, [contenteditable="true"] {
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
 }
 
 body::before {

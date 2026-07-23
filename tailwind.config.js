@@ -27,7 +27,21 @@ export default {
       },
       fontFamily: {
         sans: ['var(--font-ui-sans)'],
+        display: ['var(--font-display)'],
         mono: ['var(--font-mono)'],
+      },
+      fontWeight: {
+        thin: '300',
+        normal: '400',
+        medium: '500',
+        semibold: '600',
+        bold: '700',
+      },
+      letterSpacing: {
+        tight: '-0.02em',
+        normal: '0',
+        wide: '0.015em',
+        wider: '0.02em',
       },
     },
   },

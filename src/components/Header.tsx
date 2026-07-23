@@ -147,11 +147,11 @@ export default function Header() {
       <header data-no-drag-select className={`safe-area-top fixed top-0 left-0 right-0 z-40 border-b border-slate-200/80 bg-white/78 backdrop-blur-2xl shadow-[0_1px_0_rgba(255,255,255,0.7),0_18px_40px_-28px_rgba(15,23,42,0.45)] transition-transform duration-300 ease-in-out dark:border-white/[0.08] dark:bg-slate-950/72 dark:shadow-none ${appMode === 'agent' && !agentMobileHeaderVisible ? '-translate-y-full sm:translate-y-0' : 'translate-y-0'}`}>
         <div className="safe-area-x safe-header-inner mx-auto flex max-w-[1480px] items-center justify-between relative px-4 sm:px-6 lg:px-8">
           <div className="flex-1 min-w-0 pr-2 flex items-center gap-2">
-            <h1 className="inline-flex min-w-0 items-start relative mr-2">
+            <h1 className="inline-flex min-w-0 items-start relative mr-2 font-display font-semibold">
               {showFavoriteCollectionTitle ? (
                 <>
-                  <span className="min-w-0 truncate text-[17px] font-bold tracking-tight text-gray-800 dark:text-gray-100 sm:hidden" title={favoriteCollectionTitle}>{favoriteCollectionTitle}</span>
-                  <span className="hidden items-center gap-2 text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:inline-flex">
+                  <span className="min-w-0 truncate text-[17px] tracking-tight text-gray-800 dark:text-gray-100 sm:hidden" title={favoriteCollectionTitle}>{favoriteCollectionTitle}</span>
+                  <span className="hidden items-center gap-2 text-lg tracking-tight text-slate-900 dark:text-slate-100 sm:inline-flex">
                     <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-500 text-white shadow-[0_10px_20px_-12px_rgba(37,99,235,0.9)]">
                       <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2.8l2.1 5.7 5.7 2.1-5.7 2.1-2.1 5.7-2.1-5.7-5.7-2.1 5.7-2.1L12 2.8zm5.8 12.4l.9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9.9-2.4z" />
@@ -161,7 +161,7 @@ export default function Header() {
                   </span>
                 </>
               ) : (
-                <span className="inline-flex items-center gap-2 text-[17px] font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-lg">
+                <span className="inline-flex items-center gap-2 text-[17px] tracking-tight text-slate-900 dark:text-slate-100 sm:text-lg">
                   <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-500 text-white shadow-[0_10px_20px_-12px_rgba(37,99,235,0.9)]">
                     <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2.8l2.1 5.7 5.7 2.1-5.7 2.1-2.1 5.7-2.1-5.7-5.7-2.1 5.7-2.1L12 2.8zm5.8 12.4l.9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9.9-2.4z" />

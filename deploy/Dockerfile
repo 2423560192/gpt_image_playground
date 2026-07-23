@@ -17,20 +17,25 @@ COPY . .
 RUN npm run build
 
 # ---- Production stage ----
-FROM nginx:alpine
+FROM node:20-alpine
 
 ENV HOST=0.0.0.0
 ENV PORT=80
 ENV API_URL=https://ai.xingchai.xyz/
-ENV ENABLE_API_PROXY=false
+ENV ENABLE_API_PROXY=true
 ENV LOCK_API_PROXY=false
 ENV SHOW_DEFAULT_CONFIG_ONLY=false
+ENV PROXY_PORT=3001
+
+RUN apk add --no-cache nginx && \
+    mkdir -p /run/nginx
 
 COPY --from=build /app/dist /usr/share/nginx/html
 COPY deploy/nginx.conf /etc/nginx/templates/default.conf.template
 COPY --chmod=755 deploy/migrate-api-env.envsh /docker-entrypoint.d/05-migrate-api-env.envsh
 COPY --chmod=755 deploy/inject-api-url.sh /docker-entrypoint.d/40-inject-api-url.sh
+COPY deploy/proxy-server.js /proxy-server.js
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["sh", "-c", "node /proxy-server.js & nginx -g 'daemon off;'"]

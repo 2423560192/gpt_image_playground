@@ -6,5 +6,6 @@ services:
     ports:
       - "8080:80"        # 左边是服务器端口，可自行修改
     environment:
-      - API_URL=http://sub2.kalin.asia   # 改成你的 API 地址
+      - API_URL=https://ai.xingchai.xyz   # 改成你的 API 地址
+      - ENABLE_API_PROXY=true              # 启用 API 代理，绕过 CORS
     restart: unless-stopped

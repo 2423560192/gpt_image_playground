@@ -1,6 +1,6 @@
 import { DEFAULT_STREAM_PARTIAL_IMAGES, type ApiProfile, type CustomProviderDefinition, type CustomProviderPollMapping, type CustomProviderResultMapping, type CustomProviderSubmitMapping, type ImageApiResponse, type ImageResponseItem, type ResponsesApiResponse, type ResponsesOutputItem, type TaskParams } from '../types'
 import { dataUrlToBlob, imageDataUrlToPngBlob, maskDataUrlToPngBlob } from './canvasImage'
-import { buildApiUrl, readClientDevProxyConfig, shouldUseApiProxy } from './devProxy'
+import { buildApiUrl, createProxyHeaders, readClientDevProxyConfig, shouldUseApiProxy } from './devProxy'
 import {
   assertImageInputPayloadSize,
   assertMaskEditFileSize,
@@ -622,9 +622,10 @@ async function callImagesApiSingle(opts: CallApiOptions, profile: ApiProfile): P
         formData.append('mask', maskBlob, 'mask.png')
       }
 
-      response = await fetch(buildApiUrl(profile.baseUrl, paths.editPath, proxyConfig, useApiProxy), {
+      const editUrl = buildApiUrl(profile.baseUrl, paths.editPath, proxyConfig, useApiProxy)
+      response = await fetch(editUrl.url, {
         method: 'POST',
-        headers: requestHeaders,
+        headers: { ...requestHeaders, ...createProxyHeaders(editUrl.proxyTarget) },
         cache: 'no-store',
         body: formData,
         signal: controller.signal,
@@ -656,10 +657,12 @@ async function callImagesApiSingle(opts: CallApiOptions, profile: ApiProfile): P
         body.partial_images = getStreamPartialImages(profile)
       }
 
-      response = await fetch(buildApiUrl(profile.baseUrl, paths.generationPath, proxyConfig, useApiProxy), {
+      const genUrl = buildApiUrl(profile.baseUrl, paths.generationPath, proxyConfig, useApiProxy)
+      response = await fetch(genUrl.url, {
         method: 'POST',
         headers: {
           ...requestHeaders,
+          ...createProxyHeaders(genUrl.proxyTarget),
           'Content-Type': 'application/json',
         },
         cache: 'no-store',
@@ -867,9 +870,10 @@ async function submitCustomRequest(mapping: CustomProviderSubmitMapping, opts: C
     }
   }
 
-  const response = await fetch(buildApiUrl(profile.baseUrl, path, proxyConfig, useApiProxy), {
+  const customUrl = buildApiUrl(profile.baseUrl, path, proxyConfig, useApiProxy)
+  const response = await fetch(customUrl.url, {
     method,
-    headers,
+    headers: { ...headers, ...createProxyHeaders(customUrl.proxyTarget) },
     cache: 'no-store',
     body,
     signal: controller.signal,
@@ -902,7 +906,8 @@ async function pollCustomTaskResult(
     const taskPath = appendQuery(buildTaskPath(poll.path, taskId), poll.query)
     let taskPayload: unknown
     try {
-      const taskResponse = await fetch(buildApiUrl(profile.baseUrl, taskPath, proxyConfig, false), {
+      const taskUrl = buildApiUrl(profile.baseUrl, taskPath, proxyConfig, false)
+      const taskResponse = await fetch(taskUrl.url, {
         method: poll.method ?? 'GET',
         headers: requestHeaders,
         cache: 'no-store',
@@ -1064,10 +1069,12 @@ async function callResponsesImageApiSingle(opts: CallApiOptions, profile: ApiPro
       body.stream = true
     }
 
-    const response = await fetch(buildApiUrl(profile.baseUrl, 'responses', proxyConfig, useApiProxy), {
+    const responsesUrl = buildApiUrl(profile.baseUrl, 'responses', proxyConfig, useApiProxy)
+    const response = await fetch(responsesUrl.url, {
       method: 'POST',
       headers: {
         ...requestHeaders,
+        ...createProxyHeaders(responsesUrl.proxyTarget),
         'Content-Type': 'application/json',
       },
       cache: 'no-store',

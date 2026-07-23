@@ -54,24 +54,34 @@ export function normalizeDevProxyConfig(input: unknown): DevProxyConfig | null {
   }
 }
 
+export interface BuildApiUrlResult {
+  url: string
+  proxyTarget?: string
+}
+
 export function buildApiUrl(
   baseUrl: string,
   path: string,
   proxyConfig?: DevProxyConfig | null,
   useApiProxy = false,
-): string {
+): BuildApiUrlResult {
   const normalizedBaseUrl = normalizeBaseUrl(baseUrl)
   const endpointPath = path.replace(/^\/+/, '')
 
   if (useApiProxy) {
-    return `${proxyConfig?.prefix ?? DEFAULT_PROXY_PREFIX}/${endpointPath}`
+    return {
+      url: `${proxyConfig?.prefix ?? DEFAULT_PROXY_PREFIX}/${endpointPath}`,
+      proxyTarget: normalizedBaseUrl,
+    }
   }
 
   const apiPath = normalizedBaseUrl.endsWith('/v1')
     ? endpointPath
     : ['v1', endpointPath].join('/')
 
-  return normalizedBaseUrl ? `${normalizedBaseUrl}/${apiPath}` : `/${apiPath}`
+  return {
+    url: normalizedBaseUrl ? `${normalizedBaseUrl}/${apiPath}` : `/${apiPath}`,
+  }
 }
 
 export function resolveDevProxyConfig(input: unknown, isDev: boolean): DevProxyConfig | null {
@@ -96,4 +106,9 @@ export function isApiProxyLocked(proxyConfig: DevProxyConfig | null = readClient
 
 export function shouldUseApiProxy(apiProxy: boolean, proxyConfig: DevProxyConfig | null = readClientDevProxyConfig()): boolean {
   return isApiProxyAvailable(proxyConfig) && (apiProxy || isApiProxyLocked(proxyConfig))
+}
+
+export function createProxyHeaders(target?: string): Record<string, string> {
+  if (!target) return {}
+  return { 'X-API-Target': target }
 }

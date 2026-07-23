@@ -1,5 +1,5 @@
 import { DEFAULT_AGENT_MAX_TOOL_ROUNDS, DEFAULT_STREAM_PARTIAL_IMAGES, type ApiProfile, type AppSettings, type ResponsesApiResponse, type ResponsesOutputItem, type TaskParams } from '../types'
-import { buildApiUrl, readClientDevProxyConfig, shouldUseApiProxy } from './devProxy'
+import { buildApiUrl, createProxyHeaders, readClientDevProxyConfig, shouldUseApiProxy } from './devProxy'
 import { appendStreamingFormatHint, maybeAppendStreamingHint, getApiErrorMessage, MIME_MAP, normalizeBase64Image, pickActualParams } from './imageApiShared'
 
 export interface AgentApiResultImage {
@@ -722,9 +722,10 @@ export async function callAgentResponsesApi(opts: {
       body.stream = true
     }
 
-    const response = await fetch(buildApiUrl(profile.baseUrl, 'responses', proxyConfig, useApiProxy), {
+    const responsesUrl = buildApiUrl(profile.baseUrl, 'responses', proxyConfig, useApiProxy)
+    const response = await fetch(responsesUrl.url, {
       method: 'POST',
-      headers: createHeaders(profile),
+      headers: { ...createHeaders(profile), ...createProxyHeaders(responsesUrl.proxyTarget) },
       cache: 'no-store',
       body: JSON.stringify(body),
       signal: controller.signal,
@@ -778,9 +779,10 @@ export async function callAgentConversationTitleApi(opts: {
       content.push({ type: 'input_image', image_url: dataUrl })
     }
 
-    const response = await fetch(buildApiUrl(profile.baseUrl, 'responses', proxyConfig, useApiProxy), {
+    const responsesUrl = buildApiUrl(profile.baseUrl, 'responses', proxyConfig, useApiProxy)
+    const response = await fetch(responsesUrl.url, {
       method: 'POST',
-      headers: createHeaders(profile),
+      headers: { ...createHeaders(profile), ...createProxyHeaders(responsesUrl.proxyTarget) },
       cache: 'no-store',
       body: JSON.stringify({
         model: profile.model || settings.model,
@@ -893,9 +895,10 @@ export async function callBatchImageSingle(opts: {
       body.stream = true
     }
 
-    const response = await fetch(buildApiUrl(profile.baseUrl, 'responses', proxyConfig, useApiProxy), {
+    const responsesUrl = buildApiUrl(profile.baseUrl, 'responses', proxyConfig, useApiProxy)
+    const response = await fetch(responsesUrl.url, {
       method: 'POST',
-      headers: createHeaders(profile),
+      headers: { ...createHeaders(profile), ...createProxyHeaders(responsesUrl.proxyTarget) },
       cache: 'no-store',
       body: JSON.stringify(body),
       signal: controller.signal,

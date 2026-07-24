@@ -247,7 +247,7 @@ export default function InputParamsPanel({
                   onTransparentOutputMenuOpenChange(false)
                   setParams({ transparent_output: !transparentOutputEnabled, output_compression: null })
                 }}
-                className={`relative h-6 w-11 rounded-full transition-colors ${
+                className={`relative h-6 w-11 overflow-hidden rounded-full transition-colors ${
                   !transparentOutputAvailable
                     ? 'cursor-not-allowed bg-slate-200 opacity-50 dark:bg-white/[0.08]'
                     : transparentOutputEnabled
@@ -255,7 +255,7 @@ export default function InputParamsPanel({
                       : 'bg-slate-300 dark:bg-slate-700'
                 }`}
               >
-                <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${transparentOutputEnabled ? 'translate-x-5' : 'translate-x-0.5'}`} />
+                <span className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${transparentOutputEnabled ? 'translate-x-5' : 'translate-x-0'}`} />
               </button>
             </div>
             <ButtonTooltip visible={transparentOutputHint.visible} text="基于提示词与后处理，并非模型原生生成" />

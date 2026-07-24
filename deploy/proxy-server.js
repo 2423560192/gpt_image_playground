@@ -60,6 +60,9 @@ const server = http.createServer((req, res) => {
 
   const protocol = getProtocol(target)
   const proxyReq = protocol.request(options, (proxyRes) => {
+    // 防止 error/timeout 已先发送响应头
+    if (res.headersSent) return
+
     const headers = {}
     for (const [key, value] of Object.entries(proxyRes.headers)) {
       if (['content-security-policy', 'strict-transport-security', 'public-key-pins', 'x-frame-options'].includes(key.toLowerCase())) {
@@ -76,14 +79,20 @@ const server = http.createServer((req, res) => {
 
   proxyReq.on('error', (err) => {
     console.error('Proxy error:', err.message)
-    res.writeHead(502, { 'Content-Type': 'text/plain', 'Access-Control-Allow-Origin': ALLOWED_ORIGINS })
-    res.end('Proxy error: ' + err.message)
+    // 销毁请求，防止 proxyRes 回调再写响应头
+    proxyReq.destroy()
+    if (!res.headersSent) {
+      res.writeHead(502, { 'Content-Type': 'text/plain', 'Access-Control-Allow-Origin': ALLOWED_ORIGINS })
+      res.end('Proxy error: ' + err.message)
+    }
   })
 
   proxyReq.on('timeout', () => {
     proxyReq.destroy()
-    res.writeHead(504, { 'Content-Type': 'text/plain', 'Access-Control-Allow-Origin': ALLOWED_ORIGINS })
-    res.end('Proxy timeout')
+    if (!res.headersSent) {
+      res.writeHead(504, { 'Content-Type': 'text/plain', 'Access-Control-Allow-Origin': ALLOWED_ORIGINS })
+      res.end('Proxy timeout')
+    }
   })
 
   req.pipe(proxyReq)

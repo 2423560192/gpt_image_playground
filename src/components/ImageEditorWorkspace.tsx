@@ -116,13 +116,10 @@ export default function ImageEditorWorkspace() {
   }
 
   return (
-    <main className={`safe-area-x mx-auto w-full px-3 sm:px-4 ${src ? 'flex h-[calc(100dvh-6.3rem)] max-w-none flex-col overflow-hidden pb-3 pt-3 sm:h-[calc(100dvh-3.5rem)]' : 'min-h-[calc(100vh-4rem)] max-w-[1600px] pb-6 pt-5 lg:px-6'}`}>
+    <main className={`safe-area-x mx-auto w-full px-3 sm:px-4 ${src ? 'flex h-[calc(100dvh-6.3rem)] max-w-none flex-col overflow-hidden pb-3 pt-3 sm:h-[calc(100dvh-3.5rem)]' : 'flex min-h-[calc(100vh-4rem)] max-w-[1600px] flex-col items-center justify-center pb-6 pt-5 lg:px-6'}`}>
       <div className={`flex shrink-0 flex-wrap items-center justify-between gap-3 ${src ? 'mb-3' : 'mb-4'}`}>
         <div>
           <h2 className="flex items-center gap-2 text-xl font-bold text-slate-900 dark:text-white">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500 text-white shadow-lg shadow-blue-500/20">
-              <EditIcon className="h-5 w-5" />
-            </span>
             画布编辑
           </h2>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">

@@ -126,12 +126,8 @@ export default function App() {
           <div className="safe-area-x mx-auto h-full w-full px-4 sm:px-6 lg:px-8 2xl:px-12">
             {isDesktopLayout ? (
               <div className="mx-auto max-w-[112rem]">
-                <div data-no-drag-select className="mb-3 flex items-center gap-3">
-                  <img src="./logo.png" alt="星柴AI生图" className="h-10 w-10 shrink-0 rounded-xl" />
-                  <div className="text-left">
-                    <h2 className="text-xl font-black tracking-tight text-blue-600 dark:text-blue-400">星柴AI生图</h2>
-                    <p className="mt-0.5 text-xs font-medium text-slate-500 dark:text-slate-400">高级轻量的 AI 图片创作工坊</p>
-                  </div>
+                <div data-no-drag-select className="mb-3">
+                  <p className="text-base font-semibold tracking-[0.1em] bg-gradient-to-r from-indigo-500 via-purple-500 to-rose-400 dark:from-indigo-400 dark:via-purple-400 dark:to-rose-300 bg-clip-text text-transparent">高级轻量的 AI 图片创作工坊</p>
                 </div>
                 <div className="grid h-[calc(100vh-9.5rem)] min-h-0 grid-cols-[21rem_minmax(38rem,1fr)_19rem] items-stretch gap-6 xl:grid-cols-[22rem_minmax(44rem,1fr)_20rem] xl:gap-8 2xl:grid-cols-[23rem_minmax(48rem,1fr)_21rem]">
                   <aside data-no-drag-select className="h-full min-h-0 overflow-hidden">

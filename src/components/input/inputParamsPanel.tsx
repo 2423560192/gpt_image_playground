@@ -241,7 +241,8 @@ export default function InputParamsPanel({
                 role="switch"
                 aria-checked={transparentOutputEnabled}
                 disabled={!transparentOutputAvailable}
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation()
                   if (!transparentOutputAvailable) return
                   onTransparentOutputMenuOpenChange(false)
                   setParams({ transparent_output: !transparentOutputEnabled, output_compression: null })

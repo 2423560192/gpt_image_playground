@@ -17,10 +17,8 @@ import {
   getActiveApiProfile,
   importCustomProviderSettingsFromJson,
   isDefaultConfigOnlyEnabled,
-  isAgentTextApiProfile,
   isOpenAICompatibleProvider,
   mergeImportedSettings,
-  normalizeAgentMaxToolRounds,
   normalizeCustomProviderDefinition,
   normalizeSettings,
   normalizeStreamPartialImages,
@@ -28,7 +26,7 @@ import {
 } from '../lib/apiProfiles'
 import { copyTextToClipboard, getClipboardFailureMessage } from '../lib/clipboard'
 import { requestBrowserNotificationPermission, type BrowserNotificationPermissionResult } from '../lib/browserNotification'
-import { DEFAULT_AGENT_MAX_TOOL_ROUNDS, DEFAULT_STREAM_PARTIAL_IMAGES, type AgentApiConfigMode, type ApiProfile, type AppSettings, type CustomProviderDefinition, type ZipDownloadRoute } from '../types'
+import { DEFAULT_STREAM_PARTIAL_IMAGES, type ApiProfile, type AppSettings, type CustomProviderDefinition, type ZipDownloadRoute } from '../types'
 import { useCloseOnEscape } from '../hooks/useCloseOnEscape'
 import { usePreventBackgroundScroll } from '../hooks/usePreventBackgroundScroll'
 import { DEFAULT_DROPDOWN_MAX_HEIGHT, getDropdownMaxHeight } from '../lib/dropdown'
@@ -37,7 +35,6 @@ import { Checkbox } from './Checkbox'
 import ViewportTooltip from './ViewportTooltip'
 import { ChevronDownIcon, CloseIcon, CopyIcon, PlusIcon, TrashIcon, GithubIcon, ExportIcon, ImportIcon, DragHandleIcon, LinkIcon } from './icons'
 import GeneralSettingsTab from './settings/GeneralSettingsTab'
-import AgentSettingsTab from './settings/AgentSettingsTab'
 
 function newId(prefix: string) {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`
@@ -61,7 +58,6 @@ const ZIP_DOWNLOAD_ROUTE_OPTIONS: Array<{ route: ZipDownloadRoute; label: string
   { route: 'image-context-menu-all', label: '图片右键菜单 > 下载全部', description: '右键图片时下载同一组输出图片。' },
   { route: 'task-detail-all', label: '任务详情 > 下载全部', description: '任务详情弹窗中下载当前任务的所有输出图。' },
   { route: 'task-detail-partial', label: '任务详情 > 下载中间步骤图', description: '任务详情弹窗中下载流式生成保留的中间步骤图。' },
-  { route: 'agent-round-all', label: 'Agent 对话轮次 > 下载所有图片', description: 'Agent 对话中下载某轮回复关联的全部图片。' },
 ]
 
 function readCopyImportUrlOptions(): CopyImportUrlOptions {
@@ -306,7 +302,7 @@ export default function SettingsModal() {
   const setReusedTaskApiProfile = useStore((s) => s.setReusedTaskApiProfile)
   const setConfirmDialog = useStore((s) => s.setConfirmDialog)
   const showToast = useStore((s) => s.showToast)
-  const hasRunningOperations = useStore((s) => hasActiveDataOperations(s.tasks, s.agentConversations))
+  const hasRunningOperations = useStore((s) => hasActiveDataOperations(s.tasks))
   const importInputRef = useRef<HTMLInputElement>(null)
   const profileMenuRef = useRef<HTMLDivElement>(null)
   const profileMenuTriggerRef = useRef<HTMLButtonElement>(null)
@@ -321,7 +317,6 @@ export default function SettingsModal() {
   
   const [draft, setDraft] = useState<AppSettings>(normalizeSettings(settings))
   const [timeoutInput, setTimeoutInput] = useState(String(getActiveApiProfile(settings).timeout))
-  const [agentMaxToolRoundsInput, setAgentMaxToolRoundsInput] = useState(String(settings.agentMaxToolRounds))
   const [showApiKey, setShowApiKey] = useState(false)
   const [showProfileMenu, setShowProfileMenu] = useState(false)
   const [profileMenuMaxHeight, setProfileMenuMaxHeight] = useState(DEFAULT_DROPDOWN_MAX_HEIGHT)
@@ -415,21 +410,6 @@ export default function SettingsModal() {
     ? `已开启 ${enabledZipDownloadRouteCount} 项使用压缩包进行批量下载的途径`
     : '未开启任何使用压缩包进行批量下载的途径'
 
-  const agentTextProfiles = draft.profiles.filter(isAgentTextApiProfile)
-  const selectedAgentTextProfile = agentTextProfiles.find((profile) => profile.id === draft.agentTextProfileId)
-    ?? (isAgentTextApiProfile(activeProfile) ? activeProfile : agentTextProfiles[0])
-    ?? null
-  const selectedAgentImageProfile = draft.profiles.find((profile) => profile.id === draft.agentImageProfileId)
-    ?? activeProfile
-  const agentTextProfileOptions = agentTextProfiles.map((profile) => ({
-    label: `${profile.name} · ${profile.model || DEFAULT_RESPONSES_MODEL}`,
-    value: profile.id,
-  }))
-  const agentImageProfileOptions = draft.profiles.map((profile) => ({
-    label: `${profile.name} · ${getApiProviderLabel(draft, profile.provider)} · ${profile.model}`,
-    value: profile.id,
-  }))
-
   const wasSettingsOpenRef = useRef(false)
 
   useEffect(() => {
@@ -455,7 +435,6 @@ export default function SettingsModal() {
     })
     setDraft(nextDraft)
     setTimeoutInput(String(getActiveApiProfile(nextDraft).timeout))
-    setAgentMaxToolRoundsInput(String(nextDraft.agentMaxToolRounds))
   }, [apiProxyAvailable, apiProxyLocked, showSettings, settings, reusedTaskApiProfileId])
 
   useEffect(() => {
@@ -690,19 +669,14 @@ export default function SettingsModal() {
       timeoutInput.trim() === '' || Number.isNaN(nextTimeout)
         ? DEFAULT_SETTINGS.timeout
         : nextTimeout
-    const normalizedAgentMaxToolRounds = agentMaxToolRoundsInput.trim() === ''
-      ? DEFAULT_AGENT_MAX_TOOL_ROUNDS
-      : normalizeAgentMaxToolRounds(agentMaxToolRoundsInput, draft.agentMaxToolRounds)
     const nextDraft = {
       ...draft,
-      agentMaxToolRounds: normalizedAgentMaxToolRounds,
       profiles: activeProviderIsOpenAICompatible
         ? draft.profiles.map((profile) =>
             profile.id === activeProfile.id ? { ...profile, timeout: normalizedTimeout } : profile,
           )
         : draft.profiles,
     }
-    setAgentMaxToolRoundsInput(String(normalizedAgentMaxToolRounds))
     commitSettings(nextDraft)
     setShowSettings(false)
   }
@@ -715,14 +689,6 @@ export default function SettingsModal() {
     setTimeoutInput(String(normalizedTimeout))
     updateActiveProfile({ timeout: normalizedTimeout }, true)
   }, [draft, activeProfile.id, activeProfile.provider, activeProfile.timeout, timeoutInput])
-
-  const commitAgentMaxToolRounds = useCallback(() => {
-    const value = agentMaxToolRoundsInput.trim() === ''
-      ? DEFAULT_AGENT_MAX_TOOL_ROUNDS
-      : normalizeAgentMaxToolRounds(agentMaxToolRoundsInput, draft.agentMaxToolRounds)
-    setAgentMaxToolRoundsInput(String(value))
-    if (value !== draft.agentMaxToolRounds) commitSettings({ ...draft, agentMaxToolRounds: value })
-  }, [agentMaxToolRoundsInput, draft])
 
   const showNotificationPermissionMessage = (result: Exclude<BrowserNotificationPermissionResult, { ok: true }>) => {
     if (result.reason === 'unsupported') {
@@ -846,15 +812,6 @@ export default function SettingsModal() {
     })
     commitSettings(nextDraft)
     setShowProfileMenu(false)
-  }
-
-  const updateAgentApiConfigMode = (mode: AgentApiConfigMode) => {
-    commitSettings({
-      ...draft,
-      agentApiConfigMode: mode,
-      agentTextProfileId: mode !== 'off' ? selectedAgentTextProfile?.id ?? draft.agentTextProfileId : draft.agentTextProfileId,
-      agentImageProfileId: mode === 'hybrid' ? selectedAgentImageProfile?.id ?? draft.agentImageProfileId : draft.agentImageProfileId,
-    })
   }
 
   const duplicateActiveProfile = () => {
@@ -1272,17 +1229,6 @@ export default function SettingsModal() {
                 习惯配置
               </button>
               <button
-                onClick={() => setActiveTab('agent')}
-                className={`whitespace-nowrap flex-shrink-0 flex items-center gap-2.5 px-3 py-2.5 text-sm rounded-xl transition-colors ${activeTab === 'agent' ? 'bg-white dark:bg-white/[0.08] shadow-sm text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-white/[0.04]'}`}
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8V4H8" />
-                  <rect width="16" height="12" x="4" y="8" rx="2" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2 14h2M20 14h2M15 13v2M9 13v2" />
-                </svg>
-                Agent 配置
-              </button>
-              <button
                 onClick={() => setActiveTab('data')}
                 className={`whitespace-nowrap flex-shrink-0 flex items-center gap-2.5 px-3 py-2.5 text-sm rounded-xl transition-colors ${activeTab === 'data' ? 'bg-white dark:bg-white/[0.08] shadow-sm text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-white/[0.04]'}`}
               >
@@ -1316,21 +1262,6 @@ export default function SettingsModal() {
               />
             )}
 
-            {activeTab === 'agent' && (
-              <AgentSettingsTab
-                draft={draft}
-                agentMaxToolRoundsInput={agentMaxToolRoundsInput}
-                agentTextProfileOptions={agentTextProfileOptions}
-                agentImageProfileOptions={agentImageProfileOptions}
-                selectedAgentTextProfile={selectedAgentTextProfile}
-                selectedAgentImageProfile={selectedAgentImageProfile}
-                setAgentMaxToolRoundsInput={setAgentMaxToolRoundsInput}
-                updateAgentApiConfigMode={updateAgentApiConfigMode}
-                commitSettings={commitSettings}
-                commitAgentMaxToolRounds={commitAgentMaxToolRounds}
-              />
-            )}
-            
             {activeTab === 'api' && (
               <div className="space-y-4">
                 <div>

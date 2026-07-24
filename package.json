@@ -14,15 +14,13 @@
   },
   "dependencies": {
     "@fal-ai/client": "^1.10.0",
-    "@streamdown/math": "^1.0.2",
     "core-js": "^3.49.0",
     "fflate": "^0.8.3",
-    "katex": "^0.16.47",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-markdown": "^10.1.0",
-    "remark-gfm": "^4.0.1",
-    "streamdown": "^2.5.0",
+    "react-filerobot-image-editor": "^4.9.1",
+    "react-konva": "^19.2.5",
+    "styled-components": "^6.4.4",
     "zustand": "^5.0.5"
   },
   "overrides": {

@@ -9,7 +9,7 @@ import type { AppSettings } from './types'
 import Header from './components/Header'
 import SearchBar from './components/SearchBar'
 import TaskGrid from './components/TaskGrid'
-import AgentWorkspace from './components/AgentWorkspace'
+import ImageEditorWorkspace from './components/ImageEditorWorkspace'
 import InputBar from './components/InputBar'
 import DetailModal from './components/DetailModal'
 import Lightbox from './components/Lightbox'
@@ -119,19 +119,15 @@ export default function App() {
   return (
     <div className="relative min-h-screen overflow-x-hidden text-slate-900 dark:text-slate-100">
       <Header />
-      {appMode === 'agent' ? (
-        <AgentWorkspace />
+      {appMode === 'editor' ? (
+        <ImageEditorWorkspace />
       ) : (
         <main data-home-main data-drag-select-surface className="pb-48 pt-3 sm:pt-5 lg:h-[calc(100vh-4rem)] lg:overflow-hidden lg:pb-4">
           <div className="safe-area-x mx-auto h-full w-full px-4 sm:px-6 lg:px-8 2xl:px-12">
             {isDesktopLayout ? (
               <div className="mx-auto max-w-[112rem]">
                 <div data-no-drag-select className="mb-3 flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-500 text-white shadow-[0_16px_32px_-16px_rgba(37,99,235,0.95)] ring-4 ring-blue-500/10 dark:ring-blue-400/10">
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2.8l2.1 5.7 5.7 2.1-5.7 2.1-2.1 5.7-2.1-5.7-5.7-2.1 5.7-2.1L12 2.8zm5.8 12.4l.9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9.9-2.4z" />
-                    </svg>
-                  </div>
+                  <img src="./logo.png" alt="星柴AI生图" className="h-10 w-10 shrink-0 rounded-xl" />
                   <div className="text-left">
                     <h2 className="text-xl font-black tracking-tight text-blue-600 dark:text-blue-400">星柴AI生图</h2>
                     <p className="mt-0.5 text-xs font-medium text-slate-500 dark:text-slate-400">高级轻量的 AI 图片创作工坊</p>
@@ -181,11 +177,7 @@ export default function App() {
             ) : (
               <>
                 <div data-no-drag-select className="mb-5 text-center">
-                  <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-500 text-white shadow-[0_16px_32px_-16px_rgba(37,99,235,0.95)] ring-4 ring-blue-500/10 dark:ring-blue-400/10">
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2.8l2.1 5.7 5.7 2.1-5.7 2.1-2.1 5.7-2.1-5.7-5.7-2.1 5.7-2.1L12 2.8zm5.8 12.4l.9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9.9-2.4z" />
-                    </svg>
-                  </div>
+                  <img src="./logo.png" alt="星柴AI生图" className="mx-auto mb-2 h-10 w-10 rounded-2xl" />
                   <h2 className="text-2xl font-black tracking-tight text-blue-600 dark:text-blue-400 sm:text-3xl">星柴AI生图</h2>
                   <p className="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400 sm:text-sm">高级轻量的 AI 图片创作工坊</p>
                 </div>
@@ -196,7 +188,7 @@ export default function App() {
           </div>
         </main>
       )}
-      {(appMode === 'agent' || !isDesktopLayout) && <InputBar />}
+      {appMode === 'gallery' && !isDesktopLayout && <InputBar />}
       <DetailModal />
       <Lightbox />
       <SettingsModal />

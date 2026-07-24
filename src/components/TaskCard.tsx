@@ -4,7 +4,6 @@ import { useStore, ensureImageThumbnailCached, subscribeImageThumbnail, retryTas
 import { formatImageRatio } from '../lib/size'
 import { getParamDisplay, ActualValueBadge } from '../lib/paramDisplay'
 import { DEFAULT_IMAGES_MODEL, DEFAULT_FAL_MODEL } from '../lib/apiProfiles'
-import { isAgentTaskPromptPending } from '../lib/taskPromptDisplay'
 import { CodeIcon, TransparentBgIcon } from './icons'
 import ViewportTooltip from './ViewportTooltip'
 
@@ -314,9 +313,8 @@ export default function TaskCard({
   const showTransparentOutput = task.transparentOutput || task.params.transparent_output
 
   const nDisplay = getParamDisplay(task, 'n')
-  const isAgentTask = task.sourceMode === 'agent' || Boolean(task.agentConversationId || task.agentRoundId)
-  const showPendingPrompt = isAgentTaskPromptPending(task)
-  const showN = !isAgentTask && (task.params.n > 1 || nDisplay.isMismatch)
+  const showPendingPrompt = false
+  const showN = task.params.n > 1 || nDisplay.isMismatch
   const outputErrorCount = task.outputErrors?.length ?? 0
   const outputSuccessCount = task.outputImages?.length ?? 0
   const requestedOutputCount = Math.max(task.params.n, outputSuccessCount + outputErrorCount)
@@ -370,25 +368,6 @@ export default function TaskCard({
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         onTouchCancel={handleTouchCancel}
-        draggable={task.status === 'done' && task.outputImages?.length > 0}
-        onDragStart={(e) => {
-          if (task.status !== 'done' || !task.outputImages?.length) return;
-          const imageIds = task.outputImages;
-          e.dataTransfer.setData('text/plain', `agent-images:${imageIds.join(',')}`);
-          e.dataTransfer.effectAllowed = 'copy';
-          // Optionally set drag image if we have thumbSrc
-          if (thumbSrc) {
-            const preview = document.createElement('div');
-            preview.style.cssText = 'position:fixed;left:-1000px;top:-1000px;width:100px;height:100px;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.25);';
-            const previewImg = document.createElement('img');
-            previewImg.src = thumbSrc;
-            previewImg.style.cssText = 'width:100px;height:100px;object-fit:cover;display:block;';
-            preview.appendChild(previewImg);
-            document.body.appendChild(preview);
-            e.dataTransfer.setDragImage(preview, 50, 50);
-            setTimeout(() => preview.remove(), 0);
-          }
-        }}
       >
         {/* 选中时的角标 */}
       {isSelected && (

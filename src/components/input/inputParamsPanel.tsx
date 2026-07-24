@@ -47,17 +47,13 @@ export default function InputParamsPanel({
   commitOutputCompression,
   moderationHint,
   moderationDisabled,
-  agentAutoImageCount,
   outputImageLimit,
   nInput,
   setNInputFocused,
   commitN,
   handleNInputChange,
   handleNLimitIncreaseAttempt,
-  showAgentNHint,
   hideNLimitHint,
-  startAgentNHintTouch,
-  clearAgentNHintTouchTimer,
   nLimitHint,
   nLimitHintText,
   streamConcurrentByN,
@@ -88,17 +84,13 @@ export default function InputParamsPanel({
   commitOutputCompression: () => void
   moderationHint: HintTooltipState
   moderationDisabled: boolean
-  agentAutoImageCount: boolean
   outputImageLimit: number
   nInput: string
   setNInputFocused: (focused: boolean) => void
   commitN: () => void
   handleNInputChange: (value: string) => void
   handleNLimitIncreaseAttempt: (preventDefault: () => void) => void
-  showAgentNHint: () => void
   hideNLimitHint: () => void
-  startAgentNHintTouch: () => void
-  clearAgentNHintTouchTimer: () => void
   nLimitHint: HintTooltipState
   nLimitHintText: string
   streamConcurrentByN: boolean
@@ -331,35 +323,28 @@ export default function InputParamsPanel({
 
         <label
           className={fieldClass}
-          onMouseEnter={() => {
-            showAgentNHint()
-            streamConcurrentHint.show()
-          }}
+          onMouseEnter={streamConcurrentHint.show}
           onMouseLeave={() => {
             hideNLimitHint()
             streamConcurrentHint.hide()
           }}
           onTouchStart={() => {
-            startAgentNHintTouch()
             streamConcurrentHint.startTouch()
           }}
           onTouchEnd={() => {
-            clearAgentNHintTouchTimer()
             streamConcurrentHint.clearTimer()
           }}
           onTouchCancel={() => {
-            clearAgentNHintTouchTimer()
             hideNLimitHint()
             streamConcurrentHint.hide()
           }}
           onClick={() => {
-            showAgentNHint()
             streamConcurrentHint.show()
           }}
         >
           <div className="flex items-center justify-between">
             <span className={labelClass}>生成数量</span>
-            {!agentAutoImageCount && <span className="text-[10px] text-slate-400">最多 {outputImageLimit} 张</span>}
+            <span className="text-[10px] text-slate-400">最多 {outputImageLimit} 张</span>
           </div>
           <input
             value={nInput}
@@ -375,15 +360,10 @@ export default function InputParamsPanel({
             onWheel={(e) => {
               if (e.deltaY < 0) handleNLimitIncreaseAttempt(() => e.preventDefault())
             }}
-            disabled={agentAutoImageCount}
-            type={agentAutoImageCount ? 'text' : 'number'}
-            min={agentAutoImageCount ? undefined : 1}
-            max={agentAutoImageCount ? undefined : outputImageLimit}
-            className={`w-full rounded-2xl border border-slate-200/80 px-4 py-3 text-xs shadow-sm outline-none transition-all dark:border-white/[0.08] ${
-              agentAutoImageCount
-                ? 'cursor-not-allowed bg-slate-100/70 text-slate-400 dark:bg-white/[0.04]'
-                : 'bg-white/70 text-slate-700 focus:border-blue-400 dark:bg-white/[0.03] dark:text-slate-200'
-            }`}
+            type="number"
+            min={1}
+            max={outputImageLimit}
+            className="w-full rounded-2xl border border-slate-200/80 bg-white/70 px-4 py-3 text-xs text-slate-700 shadow-sm outline-none transition-all focus:border-blue-400 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-200"
           />
           <ButtonTooltip visible={nLimitHint.visible} text={nLimitHintText} />
           <ButtonTooltip visible={streamConcurrentByN && streamConcurrentHint.visible && !nLimitHint.visible} text="数量大于 1 时会将多图生成拆分为并发单图" />
@@ -548,16 +528,15 @@ export default function InputParamsPanel({
       </label>
       <label
         className="relative flex flex-col gap-0.5"
-        onMouseEnter={() => { showAgentNHint(); streamConcurrentHint.show() }}
+        onMouseEnter={streamConcurrentHint.show}
         onMouseLeave={() => { hideNLimitHint(); streamConcurrentHint.hide() }}
-        onTouchStart={() => { startAgentNHintTouch(); streamConcurrentHint.startTouch() }}
-        onTouchEnd={() => { clearAgentNHintTouchTimer(); streamConcurrentHint.clearTimer() }}
+        onTouchStart={streamConcurrentHint.startTouch}
+        onTouchEnd={streamConcurrentHint.clearTimer}
         onTouchCancel={() => {
-          clearAgentNHintTouchTimer()
           hideNLimitHint()
           streamConcurrentHint.hide()
         }}
-        onClick={() => { showAgentNHint(); streamConcurrentHint.show() }}
+        onClick={streamConcurrentHint.show}
       >
         <span className="text-gray-400 dark:text-gray-500 ml-1">数量</span>
         <input
@@ -574,15 +553,10 @@ export default function InputParamsPanel({
           onWheel={(e) => {
             if (e.deltaY < 0) handleNLimitIncreaseAttempt(() => e.preventDefault())
           }}
-          disabled={agentAutoImageCount}
-          type={agentAutoImageCount ? 'text' : 'number'}
-          min={agentAutoImageCount ? undefined : 1}
-          max={agentAutoImageCount ? undefined : outputImageLimit}
-          className={`px-3 py-1.5 rounded-xl border border-gray-200/60 dark:border-white/[0.08] focus:outline-none text-xs transition-all duration-200 shadow-sm ${
-            agentAutoImageCount
-              ? 'bg-gray-100/50 dark:bg-white/[0.05] opacity-50 cursor-not-allowed'
-              : 'bg-white/50 dark:bg-white/[0.03]'
-          }`}
+          type="number"
+          min={1}
+          max={outputImageLimit}
+          className="rounded-xl border border-gray-200/60 bg-white/50 px-3 py-1.5 text-xs shadow-sm outline-none transition-all duration-200 dark:border-white/[0.08] dark:bg-white/[0.03]"
         />
         <ButtonTooltip visible={nLimitHint.visible} text={nLimitHintText} />
         <ButtonTooltip visible={streamConcurrentByN && streamConcurrentHint.visible && !nLimitHint.visible} text="数量大于 1 时会将多图生成拆分为并发单图" />
